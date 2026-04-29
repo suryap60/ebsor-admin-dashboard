@@ -5,13 +5,13 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
 });
 
-// 🔴 CLEAN INSTANCE (NO interceptors)
+// CLEAN INSTANCE (NO interceptors)
 const refreshApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
 });
 
 
-// 🔹 REQUEST INTERCEPTOR
+//  REQUEST INTERCEPTOR
 api.interceptors.request.use((config) => {
   const token =
     typeof window !== "undefined"
@@ -26,7 +26,7 @@ api.interceptors.request.use((config) => {
 });
 
 
-// 🔹 RESPONSE INTERCEPTOR
+// RESPONSE INTERCEPTOR
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
