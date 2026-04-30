@@ -9,8 +9,15 @@ export const fetchProducts = async (params: {
   return res.data;
 };
 
+// gets product by slug
 export const fetchSingleProduct = async (slug: string) => {
-  const res = await api.get(`/products/${slug}`);
+  const res = await api.get(`/products/slug/${slug}`);
+  return res.data;
+};
+
+// gets product by id
+export const fetchProductById = async (id: string) => {
+  const res = await api.get(`/products/id/${id}`);
   return res.data;
 };
 

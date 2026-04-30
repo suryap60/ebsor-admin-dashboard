@@ -6,31 +6,48 @@ import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye } from "lucide-react";
 import ActionMenu from "@/src/components/ActionMenu";
 import ConfirmModal from "@/src/components/ConfirmModal";
 import Pagination from "@/src/components/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import { getBlogs } from "@/src/store/slices/BlogSlice";
+import { deleteBlog } from "@/src/services/BlogService";
 
-const mockBlogs = [
-  { id: 1, title: "The Future of AI in Workplace", author: "Jane Doe", status: "Published", date: "Oct 24, 2026" },
-  { id: 2, title: "10 Tips for Better Productivity", author: "John Smith", status: "Draft", date: "Oct 22, 2026" },
-  { id: 3, title: "Why Web Design Matters in 2026", author: "Alice Johnson", status: "Published", date: "Oct 20, 2026" },
-];
+
 
 export default function BlogsPage() {
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedBlogId, setSelectedBlogId] = useState<number | null>(null);
-  const [page, setPage] = useState(1);
-
-  const handleDeleteClick = (id: number) => {
-    setSelectedBlogId(id);
-    setDeleteModalOpen(true);
-  };
-
-  const confirmDelete = () => {
-    console.log("Confirmed delete for blog", selectedBlogId);
-    setDeleteModalOpen(false);
-    setSelectedBlogId(null);
-  };
+  const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  
+    const { blogs, pagination, loading } = useAppSelector(
+      (state) => state.blogs
+    );
+  
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState("");
+  
+    useEffect(() => {
+      dispatch(getBlogs({ page, limit: 10, search }));
+    }, [dispatch, page, search]);
+  
+    const handleDeleteClick = (id: string) => {
+      setSelectedBlogId(id);
+      setDeleteModalOpen(true);
+    };
+  
+    const confirmDelete = async () => {
+      if (!selectedBlogId) return;
+      try {
+        await deleteBlog(selectedBlogId);
+        dispatch(getBlogs({ page, limit: 10, search }));
+      } catch (error) {
+        console.error("Failed to delete product", error);
+      } finally {
+        setDeleteModalOpen(false);
+        setSelectedBlogId(null);
+      }
+    };
 
   return (
     <div className="space-y-6">
@@ -77,13 +94,13 @@ export default function BlogsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/50">
-            {mockBlogs.map((blog, i) => (
+            {blogs.map((blog, i) => (
               <motion.tr
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: i * 0.05 }}
-                key={blog.id}
-                onClick={() => router.push(`/admin/blogs/${blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)}
+                key={blog._id}
+                onClick={() => router.push(`/admin/blogs/${blog.slug}`)}
                 className="hover:bg-zinc-100 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer"
               >
                 <td className="px-6 py-4">
@@ -91,21 +108,31 @@ export default function BlogsPage() {
                 </td>
                 <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{blog.author}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${blog.status === 'Published'
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${blog.status === 'published'
                     ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                     : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                     }`}>
                     {blog.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{blog.date}</td>
+                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{blog.createdAt}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end">
                     <ActionMenu
                       actions={[
-                        { label: "View Blog", icon: <Eye size={16} />, onClick: () => router.push(`/admin/blogs/${blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`) },
-                        { label: "Edit Blog", icon: <Edit size={16} />, onClick: () => router.push(`/admin/blogs/${blog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`) },
-                        { label: "Delete", icon: <Trash2 size={16} />, onClick: () => handleDeleteClick(blog.id), destructive: true },
+                        {
+                          label: "View Details",
+                          onClick: () => router.push(`/admin/blogs/${blog.slug}`),
+                        },
+                        {
+                          label: "Edit",
+                          onClick: () => router.push(`/admin/blogs/edit/${blog._id}`),
+                        },
+                        {
+                          label: "Delete",
+                          onClick: () => handleDeleteClick(blog._id),
+                          destructive: true,
+                        },
                       ]}
                     />
                   </div>

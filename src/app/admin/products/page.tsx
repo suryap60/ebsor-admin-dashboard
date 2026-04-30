@@ -128,7 +128,7 @@ export default function ProductsPage() {
                         },
                         {
                           label: "Edit",
-                          onClick: () => router.push(`/admin/products/${product._id}/edit`),
+                          onClick: () => router.push(`/admin/products/edit/${product._id}`),
                         },
                         {
                           label: "Delete",

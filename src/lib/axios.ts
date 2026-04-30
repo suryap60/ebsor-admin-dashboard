@@ -46,7 +46,7 @@ api.interceptors.response.use(
           throw new Error("No refresh token");
         }
 
-        // ✅ USE CLEAN INSTANCE (IMPORTANT)
+        // USE CLEAN INSTANCE (IMPORTANT)
         const res = await refreshApi.post("/auth/refresh", {
           refreshToken,
         });
@@ -55,21 +55,21 @@ api.interceptors.response.use(
 
         console.log("NEW TOKEN:", newAccessToken);
 
-        // ✅ Save token
+        // Save token
         localStorage.setItem("accessToken", newAccessToken);
 
-        // ✅ Update default header
+        // Update default header
         api.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${newAccessToken}`;
 
-        // ✅ Update original request
+        // Update original request
         originalRequest.headers = {
           ...originalRequest.headers,
           Authorization: `Bearer ${newAccessToken}`,
         };
 
-        // ✅ Retry request
+        // Retry request
         return api(originalRequest);
 
       } catch (refreshError) {

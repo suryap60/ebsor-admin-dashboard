@@ -1,37 +1,58 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Save, Upload, Image as ImageIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { ArrowLeft, Save, Upload } from "lucide-react";
+import { useRouter, useParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
-import { addProduct } from "@/src/store/slices/ProductSlice";
+import { getProductById } from "@/src/store/slices/ProductSlice";
 
-export default function CreateProductPage() {
+export default function EditProductPage() {
   const router = useRouter();
+  const params = useParams();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.products);
+  const { singleProduct, loading } = useAppSelector((state) => state.products);
+
+
+  useEffect(() => {
+    if (params.id) {
+      dispatch(getProductById(params.id as string));
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    if (singleProduct?.images?.[0]) {
+      setImagePreview(singleProduct.images[0]);
+    }
+  }, [singleProduct]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (!singleProduct?._id) return;
+    
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
 
     const payload = {
-      name: formData.get("name"),
-      description: formData.get("description"),
-      shortDescription: formData.get("shortDescription"),
-      category: formData.get("category"),
-      images: [], // temporary
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      shortDescription: formData.get("shortDescription") as string,
+      category: formData.get("category") as string,
+      images: singleProduct.images?.length > 0 ? singleProduct.images : ["C:/Users/SuryaP/Downloads/apple.webp"],
     };
 
-    const res = await dispatch(addProduct(payload));
-
-    if (addProduct.fulfilled.match(res)) {
+    try {
+      const { updateProduct } = await import("@/src/services/ProductSevices");
+      await updateProduct(singleProduct._id, payload);
       router.push("/admin/products");
+    } catch (error) {
+      console.error("Failed to update product:", error);
+      alert("Failed to update product");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -46,6 +67,14 @@ export default function CreateProductPage() {
     }
   };
 
+  if (loading || !singleProduct) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 pb-20">
       <div className="flex items-center gap-4">
@@ -53,12 +82,13 @@ export default function CreateProductPage() {
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Create Product</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Add a new product to your inventory.</p>
+          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Edit Product</h1>
+          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Update product details in your inventory.</p>
         </div>
       </div>
 
       <motion.form
+        key={singleProduct._id}
         onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -68,19 +98,19 @@ export default function CreateProductPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Name</label>
-              <input type="text" name="name" required placeholder="e.g. Premium Dashboard UI" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
+              <input type="text" name="name" defaultValue={singleProduct.name} required placeholder="e.g. Premium Dashboard UI" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Short Description</label>
-              <input type="text" name="shortDescription" required placeholder="A short catchy phrase" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
+              <input type="text" name="shortDescription" defaultValue={singleProduct.shortDescription} required placeholder="A short catchy phrase" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Category</label>
-              <input type="text" name="category" required placeholder="Mobile, Software, etc." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
+              <input type="text" name="category" defaultValue={singleProduct.category} required placeholder="Mobile, Software, etc." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Description</label>
-              <textarea name="description" rows={4} required placeholder="Detailed product description..." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all resize-none"></textarea>
+              <textarea name="description" defaultValue={singleProduct.description} rows={4} required placeholder="Detailed product description..." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all resize-none"></textarea>
             </div>
           </div>
 
@@ -108,11 +138,6 @@ export default function CreateProductPage() {
             </label>
           </div>
         </div>
-{/* 
-        <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Description</label>
-          <textarea rows={6} placeholder="Describe the product details..." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all resize-none" />
-        </div> */}
 
         <div className="flex items-center justify-end gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800/50">
           <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
@@ -120,7 +145,7 @@ export default function CreateProductPage() {
           </button>
           <button type="submit" disabled={isSubmitting} className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
             <Save size={18} />
-            {isSubmitting ? "Saving..." : "Save Product"}
+            {isSubmitting ? "Updating..." : "Update Product"}
           </button>
         </div>
       </motion.form>

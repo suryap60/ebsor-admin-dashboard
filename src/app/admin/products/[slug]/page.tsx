@@ -1,20 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Save, Upload } from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getSingleProduct } from "@/src/store/slices/ProductSlice";
 
-export default function EditProductPage() {
+export default function ViewProductPage() {
   const router = useRouter();
   const params = useParams();
   const dispatch = useAppDispatch();
   const { singleProduct, loading } = useAppSelector((state) => state.products);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (params.slug) {
@@ -22,107 +20,89 @@ export default function EditProductPage() {
     }
   }, [dispatch, params.slug]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!singleProduct?._id) return;
-    setIsSubmitting(true);
-    const formData = new FormData(e.currentTarget);
-    const payload = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      shortDescription: formData.get("shortDescription") as string,
-      category: formData.get("category") as string,
-      images: singleProduct.images?.length > 0 ? singleProduct.images : ["C:/Users/SuryaP/Downloads/apple.webp"],
-    };
-
-    try {
-      const { updateProduct } = await import("@/src/services/ProductSevices");
-      await updateProduct(singleProduct._id, payload);
-      router.push("/admin/products");
-    } catch (error) {
-      console.error("Failed to update product:", error);
-      alert("Failed to update product");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+  if (loading || !singleProduct) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-20">
-      <div className="flex items-center gap-4">
-        <button onClick={() => router.back()} className="p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
-          <ArrowLeft size={18} />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Edit Product</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Update details for Product #{params.slug}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.back()} className="p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Product Details</h1>
+            <p className="text-zinc-600 dark:text-zinc-400 text-sm">Viewing details for {singleProduct.name}</p>
+          </div>
         </div>
+        <Link href={`/admin/products/edit/${singleProduct._id}`}>
+          <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
+            <Edit size={18} />
+            Edit Product
+          </button>
+        </Link>
       </div>
 
-      <motion.form
-        key={singleProduct?._id || "loading-form"}
-        onSubmit={handleSubmit}
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8 space-y-8"
+        className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Name</label>
-              <input type="text" name="name" defaultValue={singleProduct?.name || ""} className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Short Description</label>
-              <input type="text" name="shortDescription" defaultValue={singleProduct?.shortDescription || ""} className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Category</label>
-              <input type="text" name="category" defaultValue={singleProduct?.category || ""} className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Image</label>
-            <label className="border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors h-[calc(100%-2rem)] cursor-pointer group relative overflow-hidden block">
-              <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-              {imagePreview ? (
-                <div className="absolute inset-0 w-full h-full">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Image Section */}
+          <div className="col-span-1">
+            <div className="aspect-square rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden relative">
+              {singleProduct.images && singleProduct.images.length > 0 ? (
+                <img 
+                  src={singleProduct.images[0]} 
+                  alt={singleProduct.name} 
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <div className="w-32 h-32 bg-zinc-200 dark:bg-zinc-800 rounded-xl mb-4 mx-auto" />
+                <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                  No Image
+                </div>
               )}
-              <div className="absolute inset-0 bg-indigo-500/5 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-sm pointer-events-none">
-                <Upload size={24} className="text-indigo-600 dark:text-indigo-400 mb-2" />
-                <span className="text-sm font-medium text-zinc-950 dark:text-white">Change Image</span>
+            </div>
+          </div>
+
+          {/* Details Section */}
+          <div className="col-span-2 space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold text-zinc-950 dark:text-white">{singleProduct.name}</h2>
+              <div className="inline-block mt-2 px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20">
+                {singleProduct.category || "Uncategorized"}
               </div>
-            </label>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Short Description</h3>
+              <p className="text-zinc-800 dark:text-zinc-200 text-lg">{singleProduct.shortDescription || "N/A"}</p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Full Description</h3>
+              <p className="text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap leading-relaxed">{singleProduct.description || "N/A"}</p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+              <div>
+                <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Slug</h3>
+                <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">{singleProduct.slug || "N/A"}</p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Product ID</h3>
+                <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">{singleProduct._id}</p>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Description</label>
-          <textarea name="description" rows={6} defaultValue={singleProduct?.description || ""} className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all resize-none" />
-        </div>
-
-        <div className="flex items-center justify-end gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800/50">
-          <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
-            Cancel
-          </button>
-          <button type="submit" disabled={isSubmitting} className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
-            <Save size={18} />
-            {isSubmitting ? "Updating..." : "Update Product"}
-          </button>
-        </div>
-      </motion.form>
+      </motion.div>
     </div>
   );
 }
