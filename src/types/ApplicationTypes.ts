@@ -21,6 +21,7 @@ export interface Application {
 
 export interface ApplicationState {
   applications: Application[];
+  singleApplication: Application | null;
   pagination: any;
   loading: boolean;
   error: string | null;

@@ -27,19 +27,19 @@ export default function Pagination({
         <button
           disabled={!hasPrevPage}
           onClick={() => onPageChange(currentPage - 1)}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="cursor-pointer p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <ChevronLeft size={18} />
         </button>
         
-        <button className="w-8 h-8 rounded-lg bg-indigo-600 text-white font-medium flex items-center justify-center text-sm shadow-md shadow-indigo-600/20">
+        <button className="cursor-pointer w-8 h-8 rounded-lg bg-indigo-600 text-white font-medium flex items-center justify-center text-sm shadow-md shadow-indigo-600/20">
           {currentPage}
         </button>
         
         <button
           disabled={!hasNextPage}
           onClick={() => onPageChange(currentPage + 1)}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="cursor-pointer p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <ChevronRight size={18} />
         </button>

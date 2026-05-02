@@ -1,6 +1,6 @@
 import api from "../lib/axios";
 
-export const fetchApplications = async ({
+export const fetchContacts = async ({
   page = 1,
   limit = 10,
   search = "",
@@ -9,24 +9,12 @@ export const fetchApplications = async ({
   limit?: number;
   search?: string;
 }) => {
-  const res = await api.get(
-    `/applications?page=${page}&limit=${limit}&search=${search}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  );
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("token")
+      : null;
 
-  return res.data;
-};
-
-export const fetchApplicationById = async (id: string) => {
-  const token = typeof window !== "undefined"
-    ? localStorage.getItem("token")
-    : null;
-
-  const res = await api.get(`/applications/id/${id}`, {
+  const res = await api.get(`/contact?page=${page}&limit=${limit}&search=${search}`, {
     headers: {
       Authorization: token ? `Bearer ${token}` : "",
     },
@@ -35,7 +23,22 @@ export const fetchApplicationById = async (id: string) => {
   return res.data;
 };
 
-export const updateApplicationStatus = async (
+
+export const fetchContactById = async (id: string) => {
+  const token = typeof window !== "undefined"
+    ? localStorage.getItem("token")
+    : null;
+
+  const res = await api.get(`/contact/id/${id}`, {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  });
+
+  return res.data;
+};
+
+export const updateContactStatus = async (
   id: string,
   status: string
 ) => {
@@ -45,7 +48,7 @@ export const updateApplicationStatus = async (
       : null;
 
   const res = await api.patch(
-    `/applications/${id}/status`,
+    `/contact/${id}/status`,
     { status },
     {
       headers: {

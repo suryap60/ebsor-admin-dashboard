@@ -69,7 +69,7 @@ export default function ConfirmModal({
             <div className="p-6">
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                className="cursor-pointer absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
               >
                 <X size={18} />
               </button>
@@ -91,7 +91,7 @@ export default function ConfirmModal({
               <div className="mt-8 flex items-center justify-end gap-3 border-t border-zinc-100 dark:border-zinc-800/50 pt-6">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                 >
                   {cancelText}
                 </button>
@@ -100,7 +100,7 @@ export default function ConfirmModal({
                     onConfirm();
                     onClose();
                   }}
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-rose-600 hover:bg-rose-500 text-white shadow-sm shadow-rose-600/20 transition-all active:scale-95"
+                  className="cursor-pointer px-4 py-2 rounded-lg text-sm font-medium bg-rose-600 hover:bg-rose-500 text-white shadow-sm shadow-rose-600/20 transition-all active:scale-95"
                 >
                   {confirmText}
                 </button>

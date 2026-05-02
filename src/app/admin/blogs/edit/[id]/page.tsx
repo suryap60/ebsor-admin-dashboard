@@ -92,7 +92,7 @@ export default function EditBlogPage() {
             <div className="flex items-start justify-between mb-8">
                 <div className="flex items-start gap-4">
                     <Link href="/admin/blogs">
-                        <button className="w-10 h-10 mt-1 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+                        <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
                             <ArrowLeft size={18} />
                         </button>
                     </Link>
@@ -103,10 +103,10 @@ export default function EditBlogPage() {
                 </div>
 
                 <div className="flex items-start gap-3 mt-1">
-                    <button className="px-4 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+                    <button className="px-4 py-2 rounded-lg cursor-pointer bg-zinc-100 cursor-pointer dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
                         Update Draft
                     </button>
-                    <button type ="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-zinc-50 dark:text-white font-medium flex items-center gap-2 transition-colors">
+                    <button type ="submit" className="px-4 cursor-pointer py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-zinc-50 dark:text-white font-medium flex items-center gap-2 transition-colors">
                         <Save size={18} />
                         Save Changes
                     </button>
@@ -207,11 +207,11 @@ export default function EditBlogPage() {
                     />
                 </div>
 
-                <div className="flex items-center justify-end gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800/50">
-                    <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
+                <div className="flex items-center justify-end cursor-pointer gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800/50">
+                    <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-xl cursor-pointer text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" disabled={isSubmitting} className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
+                    <button type="submit" disabled={isSubmitting} className="bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
                         <Save size={18} />
                         {isSubmitting ? "Updating..." : "Update Product"}
                     </button>

@@ -57,7 +57,7 @@ export default function BlogsPage() {
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage your blog posts, drafts, and categories.</p>
         </div>
         <Link href="/admin/blogs/create">
-          <button className="bg-indigo-600 hover:bg-indigo-500 text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
+          <button className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
             <Plus size={18} />
             Create Blog
           </button>

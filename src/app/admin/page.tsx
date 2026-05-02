@@ -51,7 +51,7 @@ export default function AdminDashboard() {
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium text-zinc-950 dark:text-white">Recent Activity</h2>
-          <button className="text-sm text-indigo-400 hover:text-indigo-300">View All</button>
+          <button className="text-sm cursor-pointer text-indigo-400 hover:text-indigo-300">View All</button>
         </div>
         
         <div className="space-y-4">

@@ -36,7 +36,7 @@ export default function ViewBlogPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl"
+            className="p-2 bg-white dark:bg-zinc-950 cursor-pointer border border-zinc-200 dark:border-zinc-800 rounded-xl"
           >
             <ArrowLeft size={18} />
           </button>
@@ -52,11 +52,11 @@ export default function ViewBlogPage() {
         </div>
 
         <Link href={`/admin/blogs/edit/${singleBlog._id}`}>
-          <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl flex items-center gap-2">
+          <button className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2">
             <Edit size={18} />
             Edit Blog
           </button>
-        </Link>
+        </Link> 
       </div>
 
       {/* Content */}

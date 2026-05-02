@@ -33,10 +33,10 @@ export default function CreateBlogPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
+          <button className="px-4 py-2 rounded-lg bg-zinc-100 cursor-pointer dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
             Save Draft
           </button>
-          <button className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-zinc-950 dark:text-white font-medium flex items-center gap-2 transition-colors">
+          <button className="px-4 py-2 rounded-lg cursor-pointer bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-zinc-950 dark:text-white font-medium flex items-center gap-2 transition-colors">
             <Save size={18} />
             Publish
           </button>

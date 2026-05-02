@@ -26,9 +26,13 @@ export default function ProductsPage() {
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-
+ 
   useEffect(() => {
-    dispatch(getProducts({ page, limit: 10, search }));
+    const delay = setTimeout(() => {
+      dispatch(getProducts({ page, limit: 10, search }));
+    }, 500);
+
+    return () => clearTimeout(delay);
   }, [dispatch, page, search]);
 
   const handleDeleteClick = (id: string) => {
@@ -57,7 +61,7 @@ export default function ProductsPage() {
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage your products, inventory, and pricing.</p>
         </div>
         <Link href="/admin/products/create">
-          <button className="bg-indigo-600 hover:bg-indigo-500 text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
+          <button className="cursor-pointer bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
             <Plus size={18} />
             Add Product
           </button>

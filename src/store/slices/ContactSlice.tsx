@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchApplicationById, fetchApplications, updateApplicationStatus } from "@/src/services/ApplicationService";
-import { ApplicationState } from "@/src/types/ApplicationTypes";
+import { fetchContactById, fetchContacts, updateContactStatus } from "@/src/services/ContactService";
+import { ContactState } from "@/src/types/ContactTypes";
 
-export const getApplications = createAsyncThunk(
-  "applications/fetch",
+export const getContacts = createAsyncThunk(
+  "contacts/fetch",
   async (
     { page, limit, search }: { page: number; limit: number; search: string },
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetchApplications({ page, limit, search });
+      const res = await fetchContacts({ page, limit, search });
       return res;
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || "Error");
@@ -17,13 +17,13 @@ export const getApplications = createAsyncThunk(
   }
 );
 
-export const getApplicationById = createAsyncThunk(
-  "applications/getApplicationById",
+export const getContactById = createAsyncThunk(
+  "contacts/getContactById",
   async (id: string, { rejectWithValue }) => {
     try {
       console.log("API CALL START:", id);
 
-      const data = await fetchApplicationById(id);
+      const data = await fetchContactById(id);
 
       console.log("API RESPONSE:", data);
 
@@ -41,14 +41,14 @@ export const getApplicationById = createAsyncThunk(
   }
 );
 
-export const updateApplicationStatusThunk = createAsyncThunk(
-  "applications/updateStatus",
+export const updateContactStatusThunk = createAsyncThunk(
+  "contacts/updateStatus",
   async (
     { id, status }: { id: string; status: string },
     { rejectWithValue }
   ) => {
     try {
-      const data = await updateApplicationStatus(id, status);
+      const data = await updateContactStatus(id, status);
 
       if (!data || data.success === false) {
         return rejectWithValue(data?.message || "Update failed");
@@ -63,73 +63,73 @@ export const updateApplicationStatusThunk = createAsyncThunk(
   }
 );
 
-const initialState: ApplicationState = {
-  applications: [],
-  singleApplication: null,
+const initialState: ContactState = {
+  contacts: [],
+  singleContact: null,
   pagination: null,
   loading: false,
   error: null,
 };
 
-const applicationSlice = createSlice({
-  name: "applications",
+const contactSlice = createSlice({
+  name: "contacts",
   initialState,
   reducers: {
-    clearSingleApplication: (state) => {
-      state.singleApplication = null;
+    clearSingleContact: (state) => {
+      state.singleContact = null;
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getApplications.pending, (state) => {
+      .addCase(getContacts.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getApplications.fulfilled, (state, action) => {
+      .addCase(getContacts.fulfilled, (state, action) => {
         state.loading = false;
-        state.applications = action.payload.data;
+        state.contacts = action.payload.data;
         state.pagination = action.payload.pagination;
       })
-      .addCase(getApplications.rejected, (state, action) => {
+      .addCase(getContacts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(getApplicationById.pending, (state) => {
+      .addCase(getContactById.pending, (state) => {
         console.log("Pending...");
         state.loading = true;
       })
-      .addCase(getApplicationById.fulfilled, (state, action) => {
+      .addCase(getContactById.fulfilled, (state, action) => {
         console.log("Fulfilled:", action.payload);
         state.loading = false;
-        state.singleApplication = action.payload.data;
+        state.singleContact = action.payload.data;
       })
-      .addCase(getApplicationById.rejected, (state, action) => {
+      .addCase(getContactById.rejected, (state, action) => {
         console.log("Rejected:", action.payload);
         state.loading = false;
-        state.singleApplication = null;
+        state.singleContact = null;
       })
 
-      .addCase(updateApplicationStatusThunk.pending, (state) => {
+      .addCase(updateContactStatusThunk.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateApplicationStatusThunk.fulfilled, (state, action) => {
+      .addCase(updateContactStatusThunk.fulfilled, (state, action) => {
         state.loading = false;
 
         // update single application
-        state.singleApplication = action.payload.data;
+        state.singleContact = action.payload.data;
 
         // update list (important)
-        state.applications = state.applications.map((app) =>
+        state.contacts = state.contacts.map((app) =>
           app._id === action.payload.data._id
             ? { ...app, status: action.payload.data.status }
             : app
         );
       })
-      .addCase(updateApplicationStatusThunk.rejected, (state, action) => {
+      .addCase(updateContactStatusThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
   },
 });
 
-export default applicationSlice.reducer;
+export default contactSlice.reducer;

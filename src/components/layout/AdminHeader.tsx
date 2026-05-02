@@ -32,7 +32,7 @@ export default function AdminHeader() {
         
         <ThemeToggle />
         
-        <button className="relative text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:text-white transition-colors">
+        <button className="cursor-pointer relative text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:text-white transition-colors">
           <Bell size={20} />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
         </button>

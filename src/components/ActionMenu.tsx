@@ -67,7 +67,7 @@ export default function ActionMenu({ actions }: ActionMenuProps) {
       <button
         ref={buttonRef}
         onClick={toggleOpen}
-        className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+        className="cursor-pointer p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-lg transition-colors"
       >
         <BsThreeDotsVertical size={16} />
       </button>
@@ -94,7 +94,7 @@ export default function ActionMenu({ actions }: ActionMenuProps) {
                       action.onClick();
                       setIsOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors ${action.destructive
+                    className={`w-full cursor-pointer text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors ${action.destructive
                       ? "text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10"
                       : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
                       }`}
