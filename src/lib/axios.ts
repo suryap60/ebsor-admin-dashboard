@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 // MAIN API (with interceptors)
 const api = axios.create({
@@ -13,10 +14,12 @@ const refreshApi = axios.create({
 
 //  REQUEST INTERCEPTOR
 api.interceptors.request.use((config) => {
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("accessToken")
-      : null;
+  // const token =
+  //   typeof window !== "undefined"
+  //     ? localStorage.getItem("accessToken")
+  //     : null;
+
+  const token = localStorage.getItem("accessToken");
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -25,6 +28,10 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.request.use((config) => {
+  config.headers["Cache-Control"] = "no-cache";
+  return config;
+});
 
 // RESPONSE INTERCEPTOR
 api.interceptors.response.use(
@@ -74,6 +81,7 @@ api.interceptors.response.use(
 
       } catch (refreshError) {
         console.log("REFRESH FAILED:", refreshError);
+        toast.error("Session expired. Please login again ");
 
         localStorage.clear();
         window.location.href = "/login";
@@ -82,8 +90,29 @@ api.interceptors.response.use(
       }
     }
 
+    const status = error.response?.status;
+    const message =
+      error.response?.data?.message || "Something went wrong";
+
+    // Forbidden
+    if (status === 403) {
+      toast.error("You are not allowed to perform this action");
+    }
+
+    // Server error
+    else if (status === 500) {
+      toast.error("Server error. Try again later");
+    }
+
+    // Other errors (optional)
+    else if (status && status !== 401) {
+      toast.error(message);
+    }
+
     return Promise.reject(error);
   }
+
+  
 );
 
 export default api;

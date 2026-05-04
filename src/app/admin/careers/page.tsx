@@ -1,21 +1,63 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus, Search, Edit, Trash2, Power, Briefcase } from "lucide-react";
+import { Plus, Edit, Trash2, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import Pagination from "@/src/components/Pagination";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import { getCareers } from "@/src/store/slices/CareerSlice";
+import { deleteJob } from "@/src/services/CareerService";
+import ConfirmModal from "@/src/components/ConfirmModal";
 
-const mockJobs = [
-  { id: 1, title: "Senior Frontend Developer", department: "Engineering", location: "Remote", type: "Full-time", isActive: true },
-  { id: 2, title: "Product Designer", department: "Design", location: "New York, NY", type: "Full-time", isActive: true },
-  { id: 3, title: "Marketing Manager", department: "Marketing", location: "London, UK", type: "Contract", isActive: false },
-];
+
+
 
 export default function CareersPage() {
   const router = useRouter();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+
+  const { jobs, loading, pagination } = useAppSelector(
+    (state) => state.careers
+  );
+
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) return;
+
+    const delay = setTimeout(() => {
+      dispatch(getCareers({ page, limit: 10, search }));
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [dispatch, page, search]);
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedJobId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedJobId) return;
+    try {
+      await deleteJob(selectedJobId);
+      dispatch(getCareers({ page, limit: 10, search }));
+    } catch (error) {
+      console.error("Failed to delete job", error);
+    } finally {
+      setDeleteModalOpen(false);
+      setSelectedJobId(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -24,7 +66,7 @@ export default function CareersPage() {
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage open job postings and recruitment pipelines.</p>
         </div>
         <Link href="/admin/careers/create">
-          <button className="bg-indigo-600 hover:bg-indigo-50 cursor-pointer text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
+          <button className="cursor-pointer bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
             <Plus size={18} />
             Create Job
           </button>
@@ -32,13 +74,13 @@ export default function CareersPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockJobs.map((job, i) => (
+        {jobs.map((job, i) => (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: i * 0.1 }}
-            key={job.id}
-            onClick={() => router.push(`/admin/careers/${job.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)}
+            key={job._id}
+            onClick={() => router.push(`/admin/careers/${job._id}`)}
             className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 group hover:border-zinc-300 dark:border-zinc-700 transition-all flex flex-col h-full cursor-pointer"
           >
             <div className="flex justify-between items-start mb-4">
@@ -59,15 +101,15 @@ export default function CareersPage() {
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-200 dark:border-zinc-800/50 mt-4">
-              <span className="text-xs text-zinc-500 bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-md">{job.type}</span>
+              <span className="text-xs text-zinc-500 bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-md">{job.employmentType}</span>
               <div className="flex gap-1">
-                <button onClick={(e) => e.stopPropagation()} title={job.isActive ? "Deactivate" : "Activate"} className={`p-2 cursor-pointer rounded-lg transition-colors ${job.isActive ? 'cursor-pointer text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10' : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}>
+                {/* <button onClick={(e) => e.stopPropagation()} title={job.isActive ? "Deactivate" : "Activate"} className={`p-2 cursor-pointer rounded-lg transition-colors ${job.isActive ? 'cursor-pointer text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10' : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}>
                   <Power size={16} />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/careers/${job.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`); }} title="Edit" className="cursor-pointer p-2 text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors">
+                </button> */}
+                <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/careers/edit/${job._id}`);} } title="Edit" className="cursor-pointer p-2 text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors">
                   <Edit size={16} />
                 </button>
-                <button onClick={(e) => e.stopPropagation()} title="Delete" className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer rounded-lg transition-colors">
+                <button onClick={(e) => { e.stopPropagation(); handleDeleteClick(job._id); } } title="Delete" className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer rounded-lg transition-colors">
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -75,16 +117,22 @@ export default function CareersPage() {
           </motion.div>
         ))}
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action cannot be undone and will remove all associated data."
+      />
       
-      <div className="border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden mt-6">
-        <Pagination
-          currentPage={page}
-          totalPages={1}
-          hasNextPage={false}
-          hasPrevPage={false}
-          onPageChange={setPage}
-        />
-      </div>
+      <Pagination
+        currentPage={page}
+        totalPages={pagination?.total_pages || 1}
+        hasNextPage={!!pagination?.next}
+        hasPrevPage={!!pagination?.previous}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 }

@@ -7,9 +7,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import RichTextEditor from "@/src/components/RichTextEditor";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
-import { getProductById } from "@/src/store/slices/ProductSlice";
 import { getBlogById } from "@/src/store/slices/BlogSlice";
-import { title } from "process";
 
 export default function EditBlogPage() {
     const router = useRouter();
@@ -100,16 +98,6 @@ export default function EditBlogPage() {
                         <h1 className="text-2xl font-bold text-zinc-950 dark:text-white">Edit Blog Post</h1>
                         <p className="text-zinc-600 dark:text-zinc-400 text-sm">Update your blog article #{params.slug}.</p>
                     </div>
-                </div>
-
-                <div className="flex items-start gap-3 mt-1">
-                    <button className="px-4 py-2 rounded-lg cursor-pointer bg-zinc-100 cursor-pointer dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-                        Update Draft
-                    </button>
-                    <button type ="submit" className="px-4 cursor-pointer py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-zinc-50 dark:text-white font-medium flex items-center gap-2 transition-colors">
-                        <Save size={18} />
-                        Save Changes
-                    </button>
                 </div>
             </div>
 

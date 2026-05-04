@@ -4,6 +4,7 @@ import authReducer from "./slices/authSlice";
 import blogReducer from "./slices/BlogSlice";
 import applicationReducer from "./slices/ApplicationSlice";
 import ContactReducer from "./slices/ContactSlice";
+import careerReducer from "./slices/CareerSlice"
 
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     blogs: blogReducer,
     applications : applicationReducer,
     contacts: ContactReducer,
+    careers: careerReducer,
   },
 });
 

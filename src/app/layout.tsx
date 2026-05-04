@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { StoreProvider } from "../components/StoreProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +41,7 @@ export default function RootLayout({
         >
           <StoreProvider>
             {children}
+            <ToastContainer position="top-right" autoClose={3000} />
           </StoreProvider>
         </ThemeProvider>
       </body>
