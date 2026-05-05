@@ -1,90 +1,127 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
+import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
-import RichTextEditor from "@/src/components/RichTextEditor";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import { getSingleJob } from "@/src/store/slices/CareerSlice";
 
-export default function EditCareerPage() {
+export default function ViewCareerPage() {
   const router = useRouter();
   const params = useParams();
-  const [description, setDescription] = useState("<ul><li>5+ years of experience in React</li><li>Deep understanding of Next.js</li></ul>");
+  const dispatch = useAppDispatch();
+
+  const { singleJob, loading } = useAppSelector((state) => state.careers);
+
+  useEffect(() => {
+    if (params.slug) {
+      dispatch(getSingleJob(params.slug as string));
+    }
+  }, [dispatch, params.slug]);
+
+  if (loading || !singleJob) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-20">
-      <div className="flex items-center gap-4">
-        <button onClick={() => router.back()} className="pcursor-pointer -2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
-          <ArrowLeft size={18} />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Edit Job Posting</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Update details for Job #{params.slug}.</p>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.back()}
+            className="p-2 bg-white dark:bg-zinc-950 cursor-pointer border border-zinc-200 dark:border-zinc-800 rounded-xl hover:text-zinc-950 dark:hover:text-white text-zinc-600 dark:text-zinc-400 transition-colors"
+          >
+            <ArrowLeft size={18} />
+          </button>
+
+          <div>
+            <h1 className="text-2xl font-bold text-zinc-950 dark:text-white">
+              Job Details
+            </h1>
+            <p className="text-zinc-500 text-sm">
+              Viewing details for {singleJob.title}
+            </p>
+          </div>
         </div>
+
+        <Link href={`/admin/careers/edit/${singleJob._id}`}>
+          <button className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
+            <Edit size={18} />
+            Edit Job
+          </button>
+        </Link>
       </div>
 
+      {/* Content */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8 space-y-8"
+        className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4 md:col-span-2">
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Job Title</label>
-              <input type="text" defaultValue="Senior Frontend Developer" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-3xl font-bold text-zinc-950 dark:text-white">
+              {singleJob.title}
+            </h2>
+            <div className="flex flex-wrap gap-4 mt-4">
+              <span className="inline-block px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20 capitalize">
+                {singleJob.department || "N/A"}
+              </span>
+              <span className="inline-block px-3 py-1 bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm font-medium border border-zinc-200 dark:border-zinc-800">
+                {singleJob.location || "N/A"}
+              </span>
+              <span className="inline-block px-3 py-1 bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm font-medium border border-zinc-200 dark:border-zinc-800 capitalize">
+                {singleJob.employmentType ? singleJob.employmentType.replace('-', ' ') : "N/A"}
+              </span>
+              <span
+                className={`px-3 py-1 rounded-lg text-sm font-medium border ${
+                  singleJob.isActive
+                    ? "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border-green-100 dark:border-green-500/20"
+                    : "bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-100 dark:border-yellow-500/20"
+                }`}
+              >
+                {singleJob.isActive ? "Active" : "Inactive"}
+              </span>
             </div>
           </div>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Department</label>
-              <select defaultValue="engineering" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all">
-                <option value="engineering">Engineering</option>
-                <option value="design">Design</option>
-                <option value="marketing">Marketing</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Location</label>
-              <input type="text" defaultValue="Remote" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" />
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Employment Type</label>
-              <select defaultValue="full-time" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all">
-                <option value="full-time">Full-time</option>
-                <option value="part-time">Part-time</option>
-                <option value="contract">Contract</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Status</label>
-              <select defaultValue="active" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all">
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-          </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-4">Job Description & Requirements</label>
-          <RichTextEditor
-            value={description}
-            onChange={setDescription}
-            placeholder="Write the job requirements and responsibilities here..."
-          />
-        </div>
+          <div>
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Salary</h3>
+            <p className="text-zinc-800 dark:text-zinc-200 text-lg">{singleJob.salary || "Not Specified"}</p>
+          </div>
 
-        <div className="flex items-center justify-end gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800/50">
-          <button onClick={() => router.back()} className="cursor-pointer px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
-            Cancel
-          </button>
-          <button className="cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
-            <Save size={18} />
-            Update Job
-          </button>
+          <div>
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Job Description & Requirements</h3>
+            <div
+              className="prose dark:prose-invert max-w-none text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: singleJob.description }}
+            />
+          </div>
+
+          {/* Footer Info */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+            <div>
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Slug</h3>
+              <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">{singleJob.slug}</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Job ID</h3>
+              <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">{singleJob._id}</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Created At</h3>
+              <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">
+                {singleJob.createdAt ? new Date(singleJob.createdAt).toLocaleDateString() : "N/A"}
+              </p>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>

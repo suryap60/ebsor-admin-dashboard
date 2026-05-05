@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye } from "lucide-react";
 import ActionMenu from "@/src/components/ActionMenu";
+import { toast } from "react-toastify";
 import ConfirmModal from "@/src/components/ConfirmModal";
 import Pagination from "@/src/components/Pagination";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getBlogs } from "@/src/store/slices/BlogSlice";
@@ -26,10 +27,16 @@ export default function BlogsPage() {
   
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
+    const [status, setStatus] = useState("");
   
+    const hasFetched = useRef(false);
+
     useEffect(() => {
-      dispatch(getBlogs({ page, limit: 10, search }));
-    }, [dispatch, page, search]);
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+      
+      dispatch(getBlogs({ page, limit: 10, search, status }));
+    }, [dispatch, page, search, status]);
   
     const handleDeleteClick = (id: string) => {
       setSelectedBlogId(id);
@@ -40,9 +47,11 @@ export default function BlogsPage() {
       if (!selectedBlogId) return;
       try {
         await deleteBlog(selectedBlogId);
-        dispatch(getBlogs({ page, limit: 10, search }));
-      } catch (error) {
-        console.error("Failed to delete product", error);
+        dispatch(getBlogs({ page, limit: 10, search, status }));
+        toast.success("Blog deleted successfully");
+      } catch (error: any) {
+        console.error("Failed to delete blog", error);
+        toast.error(error.response?.data?.message || "Failed to delete blog");
       } finally {
         setDeleteModalOpen(false);
         setSelectedBlogId(null);
@@ -75,10 +84,17 @@ export default function BlogsPage() {
             />
           </div>
           <div className="flex gap-2">
-            <select className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 outline-none">
-              <option>All Status</option>
-              <option>Published</option>
-              <option>Draft</option>
+            <select 
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value);
+              setPage(1); // reset pagination
+            }}
+              className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 outline-none"
+            >
+              <option value="">All Status</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
             </select>
           </div>
         </div>
@@ -89,7 +105,7 @@ export default function BlogsPage() {
               <th className="px-6 py-4 font-medium">Title</th>
               <th className="px-6 py-4 font-medium">Author</th>
               <th className="px-6 py-4 font-medium">Status</th>
-              <th className="px-6 py-4 font-medium">Date</th>
+              {/* <th className="px-6 py-4 font-medium">Date</th> */}
               <th className="px-6 py-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
@@ -115,21 +131,24 @@ export default function BlogsPage() {
                     {blog.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{blog.createdAt}</td>
+                {/* <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{new Date(blog.createdAt).toLocaleDateString("en-IN")}</td> */}
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end">
                     <ActionMenu
                       actions={[
                         {
                           label: "View Details",
+                          icon: <Eye size={16} />,
                           onClick: () => router.push(`/admin/blogs/${blog.slug}`),
                         },
                         {
                           label: "Edit",
+                          icon: <Edit size={16} />,
                           onClick: () => router.push(`/admin/blogs/edit/${blog._id}`),
                         },
                         {
                           label: "Delete",
+                          icon: <Trash2 size={16} />,
                           onClick: () => handleDeleteClick(blog._id),
                           destructive: true,
                         },

@@ -8,6 +8,10 @@ import RichTextEditor from "@/src/components/RichTextEditor";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { addBlog } from "@/src/store/slices/BlogSlice";
 import { useRouter } from "next/navigation";
+import { BlogPayload } from "@/src/types/Blog";
+import { toast } from "react-toastify";
+
+
 
 export default function CreateBlogPage() {
   const [content, setContent] = useState("");
@@ -18,39 +22,53 @@ export default function CreateBlogPage() {
   const router = useRouter();
   const { singleBlog, loading } = useAppSelector((state) => state.blogs);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!singleBlog?._id) return;
-
-    setIsSubmitting(true);
-    const formData = new FormData(e.currentTarget);
-
-    const payload = {
-      title: formData.get("title") as string,
-      excerpt: formData.get("excerpt") as string,
-      author: formData.get("author") as string,
-      status: formData.get("status") as string,
-      featuredImage: imagePreview, 
-      content: content,
-      tags: (formData.get("tags") as string)
-        ?.split(",")
-        .map((t) => t.trim()) || ["blog"], 
-    };
-
-    const res = await dispatch(addBlog(payload));
-
-    if (addBlog.fulfilled.match(res)) {
-      router.push("/admin/blogs");
-    }
-  };
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setIsSubmitting(true);
+    const formData = new FormData(e.currentTarget);
+
+    const payload: BlogPayload = {
+      title: formData.get("title") as string,
+      excerpt: formData.get("excerpt") as string,
+      author: formData.get("author") as string,
+      status: formData.get("status") as "draft" | "published",
+      content: content,
+      tags: (formData.get("tags") as string)
+        ?.split(",")
+        .map((t) => t.trim()) || ["blog"], 
+    };
+
+    if (imagePreview) {
+      payload.featuredImage = imagePreview;
+    }
+
+    
+    try {
+      const res = await dispatch(addBlog(payload));
+    
+      if (addBlog.fulfilled.match(res)) {
+        toast.success("Blog created successfully");
+        router.push("/admin/blogs");
+      } else {
+        toast.error((res.payload as string) || "Failed to create blog");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to create blog");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  
 
   return (
     <div className="space-y-6 pb-20">

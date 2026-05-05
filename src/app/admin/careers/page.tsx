@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus, Edit, Trash2, Briefcase } from "lucide-react";
+import { Plus, Edit, Trash2, Briefcase, Eye, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getCareers } from "@/src/store/slices/CareerSlice";
 import { deleteJob } from "@/src/services/CareerService";
 import ConfirmModal from "@/src/components/ConfirmModal";
+import { toast } from "react-toastify";
 
 
 
@@ -47,12 +48,14 @@ export default function CareersPage() {
 
   const confirmDelete = async () => {
     if (!selectedJobId) return;
-    try {
-      await deleteJob(selectedJobId);
-      dispatch(getCareers({ page, limit: 10, search }));
-    } catch (error) {
-      console.error("Failed to delete job", error);
-    } finally {
+      try {
+        await deleteJob(selectedJobId);
+        dispatch(getCareers({ page, limit: 10, search }));
+        toast.success("Job deleted successfully");
+      } catch (error: any) {
+        console.error("Failed to delete job", error);
+        toast.error(error.response?.data?.message || "Failed to delete job");
+      } finally {
       setDeleteModalOpen(false);
       setSelectedJobId(null);
     }
@@ -73,6 +76,22 @@ export default function CareersPage() {
         </Link>
       </div>
 
+      <div className="flex items-center gap-4">
+        <div className="relative w-full md:w-96">
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <input
+            type="text"
+            placeholder="Search careers..."
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+            className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-indigo-500 text-zinc-950 dark:text-white transition-colors"
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {jobs.map((job, i) => (
           <motion.div
@@ -80,7 +99,7 @@ export default function CareersPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: i * 0.1 }}
             key={job._id}
-            onClick={() => router.push(`/admin/careers/${job._id}`)}
+            onClick={() => router.push(`/admin/careers/${job.slug}`)}
             className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 group hover:border-zinc-300 dark:border-zinc-700 transition-all flex flex-col h-full cursor-pointer"
           >
             <div className="flex justify-between items-start mb-4">
@@ -103,9 +122,9 @@ export default function CareersPage() {
             <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-200 dark:border-zinc-800/50 mt-4">
               <span className="text-xs text-zinc-500 bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-md">{job.employmentType}</span>
               <div className="flex gap-1">
-                {/* <button onClick={(e) => e.stopPropagation()} title={job.isActive ? "Deactivate" : "Activate"} className={`p-2 cursor-pointer rounded-lg transition-colors ${job.isActive ? 'cursor-pointer text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10' : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}>
-                  <Power size={16} />
-                </button> */}
+                <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/careers/${job.slug}`);}} title="View Details" className={`p-2 cursor-pointer rounded-lg transition-colors ${job.isActive ? 'cursor-pointer text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10' : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}>
+                  <Eye size={16} />
+                </button>
                 <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/careers/edit/${job._id}`);} } title="Edit" className="cursor-pointer p-2 text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors">
                   <Edit size={16} />
                 </button>
@@ -122,8 +141,8 @@ export default function CareersPage() {
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={confirmDelete}
-        title="Delete Product"
-        message="Are you sure you want to delete this product? This action cannot be undone and will remove all associated data."
+        title="Delete Job"
+        message="Are you sure you want to delete this job posting? This action cannot be undone."
       />
       
       <Pagination

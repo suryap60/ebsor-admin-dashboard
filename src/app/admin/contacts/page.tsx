@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Pagination from "@/src/components/Pagination";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getContacts, updateContactStatusThunk } from "@/src/store/slices/ContactSlice";
+import { toast } from "react-toastify";
 
 
 export default function ContactsPage() {
@@ -28,10 +29,15 @@ export default function ContactsPage() {
     return () => clearTimeout(delay);
   }, [dispatch, page, search]);
 
-  const toggleStatus = (id: string, currentStatus: string) => {
+  const toggleStatus = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === "pending" ? "resolved" : "pending";
 
-    dispatch(updateContactStatusThunk({ id, status: newStatus }));
+    try {
+      await dispatch(updateContactStatusThunk({ id, status: newStatus })).unwrap();
+      toast.success(`Contact status updated to ${newStatus}`);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update contact status");
+    }
   };
 
   return (

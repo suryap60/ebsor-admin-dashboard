@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Save, Mail, Phone, Calendar, User, CheckCircle } from "lucide-react";
+import { ArrowLeft, Save, Mail, Phone, Calendar, User, CheckCircle, Edit } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";

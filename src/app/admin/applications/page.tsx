@@ -67,12 +67,12 @@ export default function ApplicationsPage() {
               className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-9 pr-4 py-1.5 text-sm outline-none focus:border-indigo-500 text-zinc-950 dark:text-white transition-colors"
             />
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <button className="bg-zinc-100 cursor-pointer dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:text-white px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors">
               <Filter size={14} />
               Filter
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="overflow-x-auto">
@@ -88,11 +88,11 @@ export default function ApplicationsPage() {
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/50">
               {applications.map((app, i) => (
-                <motion.tr 
+                <motion.tr
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2, delay: i * 0.05 }}
-                  key={app._id} 
+                  key={app._id}
                   onClick={() => router.push(`/admin/applications/${app._id}`)}
                   className="hover:bg-zinc-100 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer"
                 >
@@ -107,16 +107,15 @@ export default function ApplicationsPage() {
                   <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400"> {new Date(app.createdAt).toLocaleDateString("en-IN")}</td>
                   <td className="px-6 py-4">
                     <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          app.status === "pending"
-                            ? "bg-yellow-100 text-yellow-600"
-                            : app.status === "reviewed"
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-green-100 text-green-600"
+                      className={`px-2 py-1 rounded text-xs ${app.status === "pending"
+                        ? "bg-yellow-100 text-yellow-600"
+                        : app.status === "reviewed"
+                          ? "bg-blue-100 text-blue-600"
+                          : "bg-green-100 text-green-600"
                         }`}
-                      >
-                        {app.status}
-                      </span>
+                    >
+                      {app.status}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end">

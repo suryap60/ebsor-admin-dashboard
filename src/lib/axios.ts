@@ -33,6 +33,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// STATE FOR CONCURRENT REQUESTS
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 // RESPONSE INTERCEPTOR
 api.interceptors.response.use(
   (response) => response,
@@ -44,7 +59,22 @@ api.interceptors.response.use(
       error.response?.data?.message === "Access token expired" &&
       !originalRequest._retry
     ) {
+      if (isRefreshing) {
+        // If already refreshing, queue the request
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         const refreshToken = localStorage.getItem("refreshToken");
@@ -60,33 +90,32 @@ api.interceptors.response.use(
 
         const newAccessToken = res.data.data.accessToken;
 
-        console.log("NEW TOKEN:", newAccessToken);
+        console.log("NEW TOKEN GENERATED:", newAccessToken);
 
         // Save token
         localStorage.setItem("accessToken", newAccessToken);
 
         // Update default header
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
+        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
 
-        // Update original request
-        originalRequest.headers = {
-          ...originalRequest.headers,
-          Authorization: `Bearer ${newAccessToken}`,
-        };
+        // Process queued requests
+        processQueue(null, newAccessToken);
 
-        // Retry request
+        // Retry original request
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
 
       } catch (refreshError) {
         console.log("REFRESH FAILED:", refreshError);
-        toast.error("Session expired. Please login again ");
+        processQueue(refreshError, null);
+        toast.error("Session expired. Please login again");
 
         localStorage.clear();
         window.location.href = "/login";
 
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 
@@ -98,12 +127,10 @@ api.interceptors.response.use(
     if (status === 403) {
       toast.error("You are not allowed to perform this action");
     }
-
     // Server error
     else if (status === 500) {
       toast.error("Server error. Try again later");
     }
-
     // Other errors (optional)
     else if (status && status !== 401) {
       toast.error(message);
@@ -111,8 +138,6 @@ api.interceptors.response.use(
 
     return Promise.reject(error);
   }
-
-  
 );
 
 export default api;

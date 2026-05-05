@@ -1,0 +1,32 @@
+export interface FAQ {
+  _id?: string;
+  question: string;
+  answer: string;
+}
+
+export interface Section {
+  _id: string;
+  title: string;
+  slug: string;
+  type: "terms" | "faq" | "privacy";
+  content?: string;
+  faqs?: FAQ[];
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface SectionState {
+  sections: Section[];
+  singleSection: Section | null;
+  pagination: {
+    total: number;
+    page: number;
+    page_size: number;
+    total_pages: number;
+    next: string | null;
+    previous: string | null;
+  } | null;
+  loading: boolean;
+  error: string | null;
+}

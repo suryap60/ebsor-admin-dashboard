@@ -26,3 +26,14 @@ export interface BlogState {
   loading: boolean;
   error?: string | null;
 }
+
+
+export type BlogPayload = {
+  title: string;
+  excerpt?: string;
+  author?: string;
+  status?: "draft" | "published";
+  content: string;
+  tags?: string[];
+  featuredImage?: string;
+};

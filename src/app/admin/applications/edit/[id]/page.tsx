@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getApplicationById, updateApplicationStatusThunk } from "@/src/store/slices/ApplicationSlice";
+import { toast } from "react-toastify";
 
 export default function ApplicationDetailPage() {
     const router = useRouter();
@@ -48,9 +49,9 @@ export default function ApplicationDetailPage() {
             })
             ).unwrap();
 
-            alert("Status updated successfully");
-        } catch (err) {
-            alert("Failed to update status");
+            toast.success("Status updated successfully");
+        } catch (err: any) {
+            toast.error(err.message || "Failed to update status");
         }
     };
 

@@ -8,6 +8,8 @@ import { useParams, useRouter } from "next/navigation";
 import RichTextEditor from "@/src/components/RichTextEditor";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getBlogById } from "@/src/store/slices/BlogSlice";
+import { BlogPayload } from "@/src/types/Blog";
+import { toast } from "react-toastify";
 
 export default function EditBlogPage() {
     const router = useRouter();
@@ -45,22 +47,27 @@ export default function EditBlogPage() {
         setIsSubmitting(true);
         const formData = new FormData(e.currentTarget);
 
-        const payload = {
+        const payload : BlogPayload = {
             title: formData.get("title") as string,
             excerpt: formData.get("excerpt") as string,
             author: formData.get("author") as string,
-            status: formData.get("status") as string,
-            featuredImage: imagePreview || singleBlog.featuredImage,
+            status: formData.get("status") as "draft" | "published",
             content: content,
             tags: singleBlog.tags?.length > 0 ? singleBlog.tags : ["blog"],
         };
 
+        if (imagePreview) {
+            payload.featuredImage = imagePreview;
+        }
+
         try {
             const { updateBlog } = await import("@/src/services/BlogService");
             await updateBlog(singleBlog._id, payload);
+            toast.success("Blog updated successfully");
             router.push("/admin/blogs");
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to update blog:", error);
+            toast.error(error.response?.data?.message || "Failed to update blog");
         } finally {
             setIsSubmitting(false);
         }
@@ -201,7 +208,7 @@ export default function EditBlogPage() {
                     </button>
                     <button type="submit" disabled={isSubmitting} className="bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
                         <Save size={18} />
-                        {isSubmitting ? "Updating..." : "Update Product"}
+                        {isSubmitting ? "Updating..." : "Update Blog"}
                     </button>
                 </div>
             </motion.form >

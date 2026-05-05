@@ -109,7 +109,7 @@ const productSlice = createSlice({
         state.loading = false;
 
         // optional: add new product to list
-        state.blogs.unshift(action.payload.data);
+        // state.blogs.unshift(action.payload.data);
       })
       .addCase(addBlog.rejected, (state) => {
         state.loading = false;

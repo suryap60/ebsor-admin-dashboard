@@ -7,12 +7,13 @@ import { useRouter } from "next/navigation";
 import RichTextEditor from "@/src/components/RichTextEditor";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { addJob } from "@/src/store/slices/CareerSlice";
+import { toast } from "react-toastify";
 
 export default function CreateCareerPage() {
   const router = useRouter();
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.careers);
 
@@ -31,10 +32,17 @@ export default function CreateCareerPage() {
       description: description,
     };
 
-    const res = await dispatch(addJob(payload));
+    try {
+      const res = await dispatch(addJob(payload));
 
-    if (addJob.fulfilled.match(res)) {
-      router.push("/admin/careers");
+      if (addJob.fulfilled.match(res)) {
+        toast.success("Job created successfully");
+        router.push("/admin/careers");
+      } else {
+        toast.error((res.payload as string) || "Failed to create job");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create job");
     }
   };
 
@@ -60,11 +68,12 @@ export default function CreateCareerPage() {
           <div className="space-y-4 md:col-span-2">
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Job Title</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="title"
-                placeholder="e.g. Senior Frontend Developer" 
-                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" 
+                placeholder="e.g. Senior Frontend Developer"
+                required
+                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
               />
             </div>
           </div>
@@ -80,11 +89,12 @@ export default function CreateCareerPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Location</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="location"
-                placeholder="e.g. Remote, San Francisco" 
-                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" 
+                placeholder="e.g. Remote, San Francisco"
+                required
+                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
               />
             </div>
           </div>
@@ -110,11 +120,11 @@ export default function CreateCareerPage() {
         <div className="space-y-4 md:col-span-2">
           <div>
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Salary</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="salary"
-              placeholder="e.g. 10000 - 20000" 
-              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all" 
+              placeholder="e.g. 10000 - 20000"
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
             />
           </div>
         </div>
@@ -133,8 +143,8 @@ export default function CreateCareerPage() {
             Cancel
           </button>
           <button type="submit" disabled={isSubmitting} className="bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
-              <Save size={18} />
-              {isSubmitting ? "Posting..." : "Post Job"}
+            <Save size={18} />
+            {isSubmitting ? "Posting..." : "Post Job"}
           </button>
         </div>
       </motion.form>

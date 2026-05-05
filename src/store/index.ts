@@ -5,6 +5,8 @@ import blogReducer from "./slices/BlogSlice";
 import applicationReducer from "./slices/ApplicationSlice";
 import ContactReducer from "./slices/ContactSlice";
 import careerReducer from "./slices/CareerSlice"
+import testimonialReducer from "./slices/TestimonialSlice"
+import sectionReducer from "./slices/SectionSlice"
 
 
 export const store = configureStore({
@@ -15,6 +17,8 @@ export const store = configureStore({
     applications : applicationReducer,
     contacts: ContactReducer,
     careers: careerReducer,
+    testimonials: testimonialReducer,
+    sections: sectionReducer,
   },
 });
 

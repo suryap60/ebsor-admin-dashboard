@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Save, Download, Mail, Phone, Calendar, User, FileText } from "lucide-react";
+import { ArrowLeft, Save, Download, Mail, Phone, Calendar, User, FileText, Edit } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
@@ -44,6 +44,13 @@ export default function ApplicationDetailPage() {
                         <p className="text-zinc-600 dark:text-zinc-400 text-sm">Reviewing application #{params.id}</p>
                     </div>
                 </div>
+                <button 
+                    onClick={() => router.push(`/admin/applications/edit/${params.id}`)}
+                    className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20"
+                >
+                    <Edit size={18} />
+                    Edit Application
+                </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

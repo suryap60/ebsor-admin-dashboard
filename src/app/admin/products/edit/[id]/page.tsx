@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getProductById } from "@/src/store/slices/ProductSlice";
+import { toast } from "react-toastify";
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -41,16 +42,17 @@ export default function EditProductPage() {
       description: formData.get("description") as string,
       shortDescription: formData.get("shortDescription") as string,
       category: formData.get("category") as string,
-      images: singleProduct.images?.length > 0 ? singleProduct.images : ["C:/Users/SuryaP/Downloads/apple.webp"],
+      images: singleProduct.images?.length > 0 ? singleProduct.images : [],
     };
 
     try {
       const { updateProduct } = await import("@/src/services/ProductSevices");
       await updateProduct(singleProduct._id, payload);
+      toast.success("Product updated successfully");
       router.push("/admin/products");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to update product:", error);
-      alert("Failed to update product");
+      toast.error(error.response?.data?.message || "Failed to update product");
     } finally {
       setIsSubmitting(false);
     }

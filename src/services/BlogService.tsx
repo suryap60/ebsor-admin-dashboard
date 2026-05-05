@@ -4,6 +4,7 @@ export const fetchBlogs = async (params: {
   page?: number;
   limit?: number;
   search?: string;
+  status?: string;
 }) => {
   const res = await api.get("/blogs", { params });
   return res.data;

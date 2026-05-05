@@ -123,11 +123,6 @@ export default function ViewBlogPage() {
             dangerouslySetInnerHTML={{ __html: singleBlog.content }}
           />
 
-          {/* Footer Info */}
-          <div className="pt-6 border-t text-sm text-zinc-500">
-            <p>Slug: {singleBlog.slug}</p>
-            <p>ID: {singleBlog._id}</p>
-          </div>
         </div>
       </motion.div>
     </div>

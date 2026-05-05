@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { addProduct } from "@/src/store/slices/ProductSlice";
+import { toast } from "react-toastify";
 
 export default function CreateProductPage() {
   const router = useRouter();
@@ -28,10 +29,17 @@ export default function CreateProductPage() {
       images: [], // temporary
     };
 
-    const res = await dispatch(addProduct(payload));
+    try {
+      const res = await dispatch(addProduct(payload));
 
-    if (addProduct.fulfilled.match(res)) {
-      router.push("/admin/products");
+      if (addProduct.fulfilled.match(res)) {
+        toast.success("Product created successfully");
+        router.push("/admin/products");
+      } else {
+        toast.error((res.payload as string) || "Failed to create product");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create product");
     }
   };
 

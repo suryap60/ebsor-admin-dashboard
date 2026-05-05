@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Image as ImageIcon, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { toast } from "react-toastify";
 import ActionMenu from "@/src/components/ActionMenu";
 import ConfirmModal from "@/src/components/ConfirmModal";
 import Pagination from "@/src/components/Pagination";
@@ -45,8 +46,10 @@ export default function ProductsPage() {
     try {
       await deleteProduct(selectedProductId);
       dispatch(getProducts({ page, limit: 10, search }));
-    } catch (error) {
+      toast.success("Product deleted successfully");
+    } catch (error: any) {
       console.error("Failed to delete product", error);
+      toast.error(error.response?.data?.message || "Failed to delete product");
     } finally {
       setDeleteModalOpen(false);
       setSelectedProductId(null);
@@ -128,14 +131,17 @@ export default function ProductsPage() {
                       actions={[
                         {
                           label: "View Details",
+                          icon: <Eye size={16} />,
                           onClick: () => router.push(`/admin/products/${product.slug}`),
                         },
                         {
                           label: "Edit",
+                          icon: <Edit size={16} />,
                           onClick: () => router.push(`/admin/products/edit/${product._id}`),
                         },
                         {
                           label: "Delete",
+                          icon: <Trash2 size={16} />,
                           onClick: () => handleDeleteClick(product._id),
                           destructive: true,
                         },

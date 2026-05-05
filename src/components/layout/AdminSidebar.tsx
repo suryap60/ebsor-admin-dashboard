@@ -10,6 +10,8 @@ import {
   Briefcase,
   Files,
   MessageSquare,
+  Star,
+  ShieldCheck,
   Settings,
   LogOut
 } from "lucide-react";
@@ -25,6 +27,8 @@ export default function AdminSidebar() {
     { name: "Careers", href: "/admin/careers", icon: Briefcase },
     { name: "Applications", href: "/admin/applications", icon: Files },
     { name: "Contacts", href: "/admin/contacts", icon: MessageSquare },
+    { name: "Testimonials", href: "/admin/testimonials", icon: Star },
+    { name: "Policies & FAQs", href: "/admin/sections", icon: ShieldCheck },
   ];
 
   const bottomItems = [
