@@ -2,15 +2,48 @@
 
 import { motion } from "framer-motion";
 import { Users, FileText, ShoppingBag, Briefcase, TrendingUp, TrendingDown } from "lucide-react";
-
-const stats = [
-  { name: "Total Users", value: "2,543", icon: Users,  isPositive: true },
-  { name: "Active Blogs", value: "142", icon: FileText, isPositive: true },
-  { name: "Total Products", value: "85", icon: ShoppingBag, isPositive: false },
-  { name: "Job Listings", value: "12", icon: Briefcase, isPositive: true },
-];
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import { getProducts } from "@/src/store/slices/ProductSlice";
+import { getBlogs } from "@/src/store/slices/BlogSlice";
+import { getCareers } from "@/src/store/slices/CareerSlice";
+import { getApplications } from "@/src/store/slices/ApplicationSlice";
 
 export default function AdminDashboard() {
+  const dispatch = useAppDispatch();
+  const { pagination: productPagination } = useAppSelector(state => state.products);
+  const { pagination: blogPagination } = useAppSelector(state => state.blogs);
+  const { pagination: careerPagination } = useAppSelector(state => state.careers);
+  const { applications, pagination: appPagination } = useAppSelector(state => state.applications);
+
+  const hasFetched = useRef(false);
+
+  useEffect(() => {
+    if (hasFetched.current) return;
+    
+    const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
+    if (!token) return;
+
+    hasFetched.current = true;
+
+    const delay = setTimeout(() => {
+      dispatch(getProducts({ page: 1, limit: 1, search: "" }));
+      dispatch(getBlogs({ page: 1, limit: 1, search: "", status: "" }));
+      dispatch(getCareers({ page: 1, limit: 1, search: "" }));
+      dispatch(getApplications({ page: 1, limit: 5, search: "" }));
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [dispatch]);
+
+  const stats = [
+    { name: "Total Applicants", value: appPagination?.total || 0, icon: Users,  isPositive: true },
+    { name: "Active Blogs", value: blogPagination?.total || 0, icon: FileText, isPositive: true },
+    { name: "Total Products", value: productPagination?.total || 0, icon: ShoppingBag, isPositive: false },
+    { name: "Job Listings", value: careerPagination?.total || 0, icon: Briefcase, isPositive: true },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Overview Cards */}
@@ -51,24 +84,28 @@ export default function AdminDashboard() {
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium text-zinc-950 dark:text-white">Recent Activity</h2>
-          <button className="text-sm cursor-pointer text-indigo-400 hover:text-indigo-300">View All</button>
+          <Link href="/admin/applications" className="text-sm cursor-pointer text-indigo-400 hover:text-indigo-300">View All</Link>
         </div>
         
         <div className="space-y-4">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <div key={item} className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:border-zinc-200 dark:border-zinc-800 transition-colors group">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                  <UserIcon />
+          {applications && applications.length > 0 ? (
+            applications.slice(0, 5).map((app, i) => (
+              <div key={app._id || i} className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:border-zinc-200 dark:border-zinc-800 transition-colors group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                    <UserIcon />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{app.name}</p>
+                    <p className="text-xs text-zinc-500">Applied for {app.job?.title || 'Job'}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">New user registration</p>
-                  <p className="text-xs text-zinc-500">Alex joined the platform</p>
-                </div>
+                <span className="text-xs text-zinc-500">{new Date(app.createdAt).toLocaleDateString("en-IN")}</span>
               </div>
-              <span className="text-xs text-zinc-500">2 hours ago</span>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="text-center p-4 text-zinc-500">No recent activity.</div>
+          )}
         </div>
       </motion.div>
     </div>
