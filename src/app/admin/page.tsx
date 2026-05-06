@@ -21,7 +21,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (hasFetched.current) return;
-    
+
     const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
     if (!token) return;
 
@@ -38,9 +38,9 @@ export default function AdminDashboard() {
   }, [dispatch]);
 
   const stats = [
-    { name: "Total Applicants", value: appPagination?.total || 0, icon: Users,  isPositive: true },
-    { name: "Active Blogs", value: blogPagination?.total || 0, icon: FileText, isPositive: true },
     { name: "Total Products", value: productPagination?.total || 0, icon: ShoppingBag, isPositive: false },
+    { name: "Active Blogs", value: blogPagination?.total || 0, icon: FileText, isPositive: true },
+    { name: "Total Applicants", value: appPagination?.total || 0, icon: Users, isPositive: true },
     { name: "Job Listings", value: careerPagination?.total || 0, icon: Briefcase, isPositive: true },
   ];
 
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
           <h2 className="text-lg font-medium text-zinc-950 dark:text-white">Recent Activity</h2>
           <Link href="/admin/applications" className="text-sm cursor-pointer text-indigo-400 hover:text-indigo-300">View All</Link>
         </div>
-        
+
         <div className="space-y-4">
           {applications && applications.length > 0 ? (
             applications.slice(0, 5).map((app, i) => (

@@ -10,27 +10,35 @@ import { toast } from "react-toastify";
 
 export default function CreateProductPage() {
   const router = useRouter();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreview, setImagePreview] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.products);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    setImages(files);
+    const previewUrls = files.map((file) => URL.createObjectURL(file));
+    setImagePreview(previewUrls);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
 
-    const payload = {
-      name: formData.get("name"),
-      description: formData.get("description"),
-      shortDescription: formData.get("shortDescription"),
-      category: formData.get("category"),
-      images: [], // temporary
-    };
+    images.forEach((file) => {
+      formData.append("images", file);
+    });
+
 
     try {
-      const res = await dispatch(addProduct(payload));
+      const res = await dispatch(addProduct(formData));
 
       if (addProduct.fulfilled.match(res)) {
         toast.success("Product created successfully");
@@ -40,17 +48,6 @@ export default function CreateProductPage() {
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to create product");
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -95,28 +92,45 @@ export default function CreateProductPage() {
           <div className="space-y-4">
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Image</label>
             <label className="border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors h-[calc(100%-2rem)] cursor-pointer group block relative overflow-hidden">
-              <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-              {imagePreview ? (
-                <div className="absolute inset-0 w-full h-full">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-zinc-950/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]">
-                    <Upload size={24} className="text-white mb-2" />
-                    <span className="text-sm font-medium text-white">Change Image</span>
-                  </div>
+              <input type="file" className="hidden" accept="image/*" multiple onChange={handleImageChange} />
+              <div className="mb-4">
+                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mx-auto group-hover:bg-zinc-200 dark:group-hover:bg-zinc-800 transition-colors">
+                  <Upload size={24} className="text-zinc-500" />
                 </div>
-              ) : (
-                <>
-                  <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-4 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-800 transition-colors mx-auto">
-                    <Upload size={24} className="text-zinc-500" />
-                  </div>
-                  <h4 className="text-sm font-medium text-zinc-950 dark:text-white mb-1">Click to upload image</h4>
-                  <p className="text-xs text-zinc-500">SVG, PNG, JPG or GIF (max. 800x400px)</p>
-                </>
+                <h4 className="text-sm font-medium text-zinc-950 dark:text-white mt-2">
+                  Click to upload images
+                </h4>
+                <p className="text-xs text-zinc-500">
+                  PNG, JPG, GIF (multiple allowed)
+                </p>
+              </div>
+
+              {/* IMAGE PREVIEW GRID */}
+              {imagePreview.length > 0 && (
+                <div className="grid grid-cols-3 gap-3 mt-4 w-full">
+                  {imagePreview.map((src, i) => (
+                    <div
+                      key={i}
+                      className="relative w-full h-24 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800"
+                    >
+                      <img
+                        src={src}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+
+                      {/* HOVER OVERLAY */}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center text-white text-xs transition">
+                        Change
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </label>
           </div>
         </div>
-{/* 
+        {/* 
         <div>
           <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Description</label>
           <textarea rows={6} placeholder="Describe the product details..." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all resize-none" />

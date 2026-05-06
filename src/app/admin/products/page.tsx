@@ -109,13 +109,23 @@ export default function ProductsPage() {
               >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center">
-                      <ImageIcon size={16} className="text-zinc-500" />
+                    <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
+                      {product.images && product.images.length > 0 ? (
+                        <img 
+                          src={`http://localhost:5000${product.images[0]}`}
+                          alt={product.name} 
+                          className="w-full h-full object-cover" 
+                        />
+                      ) : (
+                        <ImageIcon size={16} className="text-zinc-500" />
+                      )}
                     </div>
                     <div className="font-medium text-zinc-950 dark:text-white">{product.name}</div>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{product.description}</td>
+                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 max-w-[200px] truncate" title={product.description}>
+                  {product.description}
+                </td>
                 <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{product.category}</td>
                 {/* <td className="px-6 py-4">
                   <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'Active'

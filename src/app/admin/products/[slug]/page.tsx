@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Edit } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getSingleProduct } from "@/src/store/slices/ProductSlice";
 
@@ -12,6 +12,8 @@ export default function ViewProductPage() {
   const router = useRouter();
   const params = useParams();
   const dispatch = useAppDispatch();
+
+  const [activeImage, setActiveImage] = useState<string | null>(null);
   const { singleProduct, loading } = useAppSelector((state) => state.products);
 
   useEffect(() => {
@@ -19,6 +21,26 @@ export default function ViewProductPage() {
       dispatch(getSingleProduct(params.slug as string));
     }
   }, [dispatch, params.slug]);
+
+  useEffect(() => {
+    if (!singleProduct || !singleProduct.images || singleProduct.images.length === 0) {
+      return;
+    }
+
+    const firstImg = singleProduct.images[0];
+
+    const fullUrl = firstImg.startsWith("http")
+      ? firstImg
+      : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:5000"}${firstImg}`;
+
+    setActiveImage(fullUrl);
+  }, [singleProduct]);
+
+  const getImageUrl = (img: string) => {
+    return img.startsWith("http") || img.startsWith("data:")
+      ? img
+      : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:5000"}${img}`;
+  };
 
   if (loading || !singleProduct) {
     return (
@@ -55,12 +77,13 @@ export default function ViewProductPage() {
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Image Section */}
-          <div className="col-span-1">
-            <div className="aspect-square rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden relative">
-              {singleProduct.images && singleProduct.images.length > 0 ? (
-                <img 
-                  src={singleProduct.images[0]} 
-                  alt={singleProduct.name} 
+          <div className="col-span-1 space-y-4">
+            {/* MAIN IMAGE */}
+            <div className="aspect-square rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+              {activeImage ? (
+                <img
+                  src={activeImage}
+                  alt={singleProduct.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -69,6 +92,31 @@ export default function ViewProductPage() {
                 </div>
               )}
             </div>
+
+            {/* THUMBNAILS */}
+            {singleProduct.images?.length > 1 && (
+              <div className="grid grid-cols-4 gap-2">
+                {singleProduct.images.map((img, i) => {
+                  const url = getImageUrl(img);
+
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => setActiveImage(url)}
+                      className={`cursor-pointer border rounded-lg overflow-hidden h-16 
+              ${activeImage === url ? "border-indigo-500" : "border-zinc-200 dark:border-zinc-800"}
+            `}
+                    >
+                      <img
+                        src={url}
+                        alt="thumb"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Details Section */}
@@ -89,8 +137,8 @@ export default function ViewProductPage() {
               <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Full Description</h3>
               <p className="text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap leading-relaxed">{singleProduct.description || "N/A"}</p>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+
+            {/* <div className="grid grid-cols-2 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
               <div>
                 <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Slug</h3>
                 <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">{singleProduct.slug || "N/A"}</p>
@@ -99,7 +147,7 @@ export default function ViewProductPage() {
                 <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Product ID</h3>
                 <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">{singleProduct._id}</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </motion.div>

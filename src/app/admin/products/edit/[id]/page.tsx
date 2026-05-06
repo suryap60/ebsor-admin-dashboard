@@ -11,7 +11,10 @@ import { toast } from "react-toastify";
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [imagePreview, setImagePreview] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -24,9 +27,19 @@ export default function EditProductPage() {
     }
   }, [params.id]);
 
+
+
   useEffect(() => {
-    if (singleProduct?.images?.[0]) {
-      setImagePreview(singleProduct.images[0]);
+    if (singleProduct?.images) {
+      setExistingImages(singleProduct.images);
+
+      const fullUrls = singleProduct.images.map((img) =>
+        img.startsWith("http")
+          ? img
+          : `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:5000"}${img}`
+      );
+
+      setImagePreview(fullUrls);
     }
   }, [singleProduct]);
 
@@ -37,17 +50,27 @@ export default function EditProductPage() {
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
 
-    const payload = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      shortDescription: formData.get("shortDescription") as string,
-      category: formData.get("category") as string,
-      images: singleProduct.images?.length > 0 ? singleProduct.images : [],
-    };
+    newImages.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    formData.append("existingImages", JSON.stringify(existingImages));
+
+
+
+    // const payload = {
+    //   name: formData.get("name") as string,
+    //   description: formData.get("description") as string,
+    //   shortDescription: formData.get("shortDescription") as string,
+    //   category: formData.get("category") as string,
+    //   images: singleProduct.images || [],
+    // };
 
     try {
       const { updateProduct } = await import("@/src/services/ProductSevices");
-      await updateProduct(singleProduct._id, payload);
+
+      await updateProduct(singleProduct._id, formData);
+      
       toast.success("Product updated successfully");
       router.push("/admin/products");
     } catch (error: any) {
@@ -59,13 +82,31 @@ export default function EditProductPage() {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+
+    setNewImages((prev) => [...prev, ...files]);
+
+    const previewUrls = files.map((file) => URL.createObjectURL(file));
+
+    setImagePreview((prev) => [...prev, ...previewUrls]);
+  };
+
+  const removeImage = (index: number) => {
+    const updatedPreview = [...imagePreview];
+    updatedPreview.splice(index, 1);
+    setImagePreview(updatedPreview);
+
+    // if removing existing image
+    if (index < existingImages.length) {
+      const updatedExisting = [...existingImages];
+      updatedExisting.splice(index, 1);
+      setExistingImages(updatedExisting);
+    } else {
+      // removing new image
+      const newIndex = index - existingImages.length;
+      const updatedNew = [...newImages];
+      updatedNew.splice(newIndex, 1);
+      setNewImages(updatedNew);
     }
   };
 
@@ -119,23 +160,44 @@ export default function EditProductPage() {
           <div className="space-y-4">
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Product Image</label>
             <label className="border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors h-[calc(100%-2rem)] cursor-pointer group block relative overflow-hidden">
-              <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-              {imagePreview ? (
-                <div className="absolute inset-0 w-full h-full">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-zinc-950/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]">
-                    <Upload size={24} className="text-white mb-2" />
-                    <span className="text-sm font-medium text-white">Change Image</span>
-                  </div>
+              <input type="file" className="hidden" multiple accept="image/*" onChange={handleImageChange} />
+
+              <div className="mb-4">
+                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mx-auto group-hover:bg-zinc-200 dark:group-hover:bg-zinc-800 transition-colors">
+                  <Upload size={24} className="text-zinc-500" />
                 </div>
-              ) : (
-                <>
-                  <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-4 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-800 transition-colors mx-auto">
-                    <Upload size={24} className="text-zinc-500" />
-                  </div>
-                  <h4 className="text-sm font-medium text-zinc-950 dark:text-white mb-1">Click to upload image</h4>
-                  <p className="text-xs text-zinc-500">SVG, PNG, JPG or GIF (max. 800x400px)</p>
-                </>
+                <h4 className="text-sm font-medium text-zinc-950 dark:text-white mt-2">
+                  Click to upload images
+                </h4>
+                <p className="text-xs text-zinc-500">
+                  PNG, JPG, GIF (multiple allowed)
+                </p>
+              </div>
+              
+              {imagePreview.length > 0 && (
+                <div className="grid grid-cols-3 gap-3 mt-4 w-full">
+                  {imagePreview.map((src, i) => (
+                    <div
+                      key={i}
+                      className="relative w-full h-24 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800"
+                    >
+                      <img
+                        src={src}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+
+                      {/* REMOVE BUTTON */}
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-0.5 rounded"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
               )}
             </label>
           </div>

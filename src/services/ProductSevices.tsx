@@ -22,12 +22,20 @@ export const fetchProductById = async (id: string) => {
 };
 
 export const createProduct = async (data: any) => {
-  const res = await api.post("/products", data);
+  const res = await api.post("/products", data,{
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
 export const updateProduct = async (id: string, data: any) => {
-  const res = await api.put(`/products/${id}`, data);
+  const res = await api.put(`/products/${id}`, data,{
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
