@@ -61,7 +61,7 @@ export default function ProductsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Products</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage your products, inventory, and pricing.</p>
+          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage your products.</p>
         </div>
         <Link href="/admin/products/create">
           <button className="cursor-pointer bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">

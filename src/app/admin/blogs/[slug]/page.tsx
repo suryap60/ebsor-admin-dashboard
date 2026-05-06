@@ -30,7 +30,7 @@ export default function ViewBlogPage() {
   }
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-20 max-w-7xl px-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -119,7 +119,7 @@ export default function ViewBlogPage() {
 
           {/* Content (IMPORTANT) */}
           <div
-            className="prose dark:prose-invert max-w-none"
+            className="prose dark:prose-invert max-w-screen overflow-hidden break-words"
             dangerouslySetInnerHTML={{ __html: singleBlog.content }}
           />
 

@@ -13,7 +13,8 @@ import {
   Star,
   ShieldCheck,
   Settings,
-  LogOut
+  LogOut,
+  HelpCircle
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -26,9 +27,10 @@ export default function AdminSidebar() {
     { name: "Blogs", href: "/admin/blogs", icon: FileText },
     { name: "Careers", href: "/admin/careers", icon: Briefcase },
     { name: "Applications", href: "/admin/applications", icon: Files },
-    { name: "Contacts", href: "/admin/contacts", icon: MessageSquare },
+    { name: "Messages", href: "/admin/contacts", icon: MessageSquare },
     { name: "Testimonials", href: "/admin/testimonials", icon: Star },
-    { name: "Policies & FAQs", href: "/admin/sections", icon: ShieldCheck },
+    { name: "Policiess", href: "/admin/policies", icon: ShieldCheck },
+    { name: "FAQs", href: "/admin/faqs", icon: HelpCircle },
   ];
 
   const bottomItems = [
