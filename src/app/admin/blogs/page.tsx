@@ -162,10 +162,10 @@ export default function BlogsPage() {
         </table>
         <Pagination
           currentPage={page}
-          totalPages={1}
-          hasNextPage={false}
-          hasPrevPage={false}
-          onPageChange={setPage}
+          totalPages={pagination?.total_pages || 1}
+          hasNextPage={!!pagination?.next}
+          hasPrevPage={!!pagination?.previous}
+          onPageChange={(p) => setPage(p)}
         />
       </div>
 

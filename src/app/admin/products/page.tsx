@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Image as ImageIcon, Eye, ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 import { toast } from "react-toastify";
 import ActionMenu from "@/src/components/ActionMenu";
 import ConfirmModal from "@/src/components/ConfirmModal";

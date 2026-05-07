@@ -61,8 +61,8 @@ const initialState: BlogState = {
   loading: false,
 };
 
-const productSlice = createSlice({
-  name: "products",
+const blogSlice = createSlice({
+  name: "blogs",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -117,4 +117,4 @@ const productSlice = createSlice({
   },
 });
 
-export default productSlice.reducer;
+export default blogSlice.reducer;
