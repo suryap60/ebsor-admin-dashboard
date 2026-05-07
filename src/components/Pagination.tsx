@@ -32,7 +32,7 @@ export default function Pagination({
           <ChevronLeft size={18} />
         </button>
         
-        <button className="cursor-pointer w-8 h-8 rounded-lg bg-indigo-600 text-white font-medium flex items-center justify-center text-sm shadow-md shadow-indigo-600/20">
+        <button className="cursor-pointer w-8 h-8 rounded-lg bg-indigo-500 text-white font-medium flex items-center justify-center text-sm shadow-md shadow-indigo-600/20">
           {currentPage}
         </button>
         

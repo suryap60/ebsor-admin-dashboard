@@ -7,6 +7,7 @@ import ContactReducer from "./slices/ContactSlice";
 import careerReducer from "./slices/CareerSlice"
 import testimonialReducer from "./slices/TestimonialSlice"
 import sectionReducer from "./slices/SectionSlice"
+import profileReducer from "./slices/ProfileSlice";
 
 
 export const store = configureStore({
@@ -19,6 +20,7 @@ export const store = configureStore({
     careers: careerReducer,
     testimonials: testimonialReducer,
     sections: sectionReducer,
+    profile: profileReducer,
   },
 });
 

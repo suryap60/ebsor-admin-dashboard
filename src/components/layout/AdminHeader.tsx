@@ -26,15 +26,15 @@ export default function AdminHeader() {
           <input 
             type="text" 
             placeholder="Search anything..." 
-            className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full pl-10 pr-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all w-64"
+            className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full pl-10 pr-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 focus:outline-none focus:border-[#3ABDE7]/80 focus:ring-1 focus:ring-indigo-500 transition-all w-64"
           />
         </div>
         
         <ThemeToggle />
         
-        <button className="cursor-pointer relative text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:text-white transition-colors">
+        <button className="cursor-pointer relative text-zinc-600 dark:text-zinc-400 dark:text-white transition-colors">
           <Bell size={20} />
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#3ABDE7] rounded-full animate-pulse"></span>
         </button>
         
         <Link href="/admin/profile" className="flex items-center gap-3 pl-4 border-l border-zinc-200 dark:border-zinc-800">

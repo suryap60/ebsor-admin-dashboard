@@ -90,13 +90,13 @@ export default function CreateSectionPage() {
               name="title"
               placeholder="e.g. Terms and Conditions"
               required
-              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Status</label>
-            <select name="isActive" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all">
+            <select name="isActive" className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all">
               <option value="true">Active</option>
               <option value="false">Draft (Inactive)</option>
             </select>
@@ -107,7 +107,7 @@ export default function CreateSectionPage() {
             <select 
               value={type} 
               onChange={(e) => setType(e.target.value as any)} 
-              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
             >
               <option value="terms">Terms</option>
               <option value="privacy">Privacy</option>
@@ -128,7 +128,7 @@ export default function CreateSectionPage() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">FAQ Items</label>
-                  <button type="button" onClick={handleAddFaq} className="flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors">
+                  <button type="button" onClick={handleAddFaq} className="flex items-center gap-1 text-sm text-indigo-600 dark:text-[#3ABDE7] hover:text-indigo-500 transition-colors">
                     <Plus size={16} /> Add FAQ
                   </button>
                 </div>
@@ -142,14 +142,14 @@ export default function CreateSectionPage() {
                           value={faq.question}
                           onChange={(e) => handleFaqChange(index, "question", e.target.value)}
                           placeholder="Question (e.g. What is the refund policy?)"
-                          className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
+                          className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
                         />
                         <textarea
                           value={faq.answer}
                           onChange={(e) => handleFaqChange(index, "answer", e.target.value)}
                           placeholder="Answer..."
                           rows={2}
-                          className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all resize-y"
+                          className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all resize-y"
                         />
                       </div>
                       {faqs.length > 1 && (
@@ -183,7 +183,7 @@ export default function CreateSectionPage() {
           <button type="button" onClick={() => router.back()} className="cursor-pointer px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
             Cancel
           </button>
-          <button type="submit" disabled={loading} className="bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
+          <button type="submit" disabled={loading} className="bg-[#3ABDE7] cursor-pointer hover:bg-[#3ABDE7] text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
             <Save size={18} />
             {loading ? "Saving..." : "Save Section"}
           </button>

@@ -69,7 +69,7 @@ export default function CareersPage() {
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage open job postings and recruitment pipelines.</p>
         </div>
         <Link href="/admin/careers/create">
-          <button className="cursor-pointer bg-indigo-600 cursor-pointer hover:bg-indigo-500 text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
+          <button className="cursor-pointer bg-[#3ABDE7] cursor-pointer hover:bg-[#3ABDE7] text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
             <Plus size={18} />
             Create Job
           </button>
@@ -87,7 +87,7 @@ export default function CareersPage() {
               setPage(1);
               setSearch(e.target.value);
             }}
-            className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-indigo-500 text-zinc-950 dark:text-white transition-colors"
+            className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-[#3ABDE7]/80 text-zinc-950 dark:text-white transition-colors"
           />
         </div>
       </div>
@@ -115,7 +115,7 @@ export default function CareersPage() {
             </div>
 
             <div className="flex-1 mt-2">
-              <h3 className="text-lg font-semibold text-zinc-950 dark:text-white mb-1 group-hover:text-indigo-400 transition-colors">{job.title}</h3>
+              <h3 className="text-lg font-semibold text-zinc-950 dark:text-white mb-1 group-hover:text-[#3ABDE7]/80 transition-colors">{job.title}</h3>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">{job.department} · {job.location}</p>
             </div>
 
@@ -125,7 +125,7 @@ export default function CareersPage() {
                 <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/careers/${job.slug}`);}} title="View Details" className={`p-2 cursor-pointer rounded-lg transition-colors ${job.isActive ? 'cursor-pointer text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10' : 'text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10'}`}>
                   <Eye size={16} />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/careers/edit/${job._id}`);} } title="Edit" className="cursor-pointer p-2 text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors">
+                <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/careers/edit/${job._id}`);} } title="Edit" className="cursor-pointer p-2 text-zinc-600 cursor-pointer dark:text-zinc-400 hover:text-[#3ABDE7]/80 hover:bg-[#3ABDE7]/10 rounded-lg transition-colors">
                   <Edit size={16} />
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); handleDeleteClick(job._id); } } title="Delete" className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer rounded-lg transition-colors">

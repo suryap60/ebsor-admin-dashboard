@@ -60,7 +60,7 @@ export default function ViewSectionPage() {
         </div>
 
         <Link href={`/admin/sections/edit/${singleSection._id}`}>
-          <button className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
+          <button className="bg-[#3ABDE7] hover:bg-[#3ABDE7] cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
             <Edit size={18} />
             Edit Document
           </button>
@@ -80,7 +80,7 @@ export default function ViewSectionPage() {
             </h2>
 
             <div className="flex flex-wrap gap-4 mt-4">
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20">
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-50 dark:bg-[#3ABDE7]/10 text-indigo-600 dark:text-[#3ABDE7] rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20">
                 {formatType(singleSection.type)}
               </span>
               <span

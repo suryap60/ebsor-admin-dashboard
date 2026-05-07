@@ -63,7 +63,7 @@ export default function ViewProductPage() {
           </div>
         </div>
         <Link href={`/admin/products/edit/${singleProduct._id}`}>
-          <button className="cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
+          <button className="cursor-pointer bg-[#3ABDE7] hover:bg-[#3ABDE7]/90 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
             <Edit size={18} />
             Edit Product
           </button>
@@ -104,7 +104,7 @@ export default function ViewProductPage() {
                       key={i}
                       onClick={() => setActiveImage(url)}
                       className={`cursor-pointer border rounded-lg overflow-hidden h-16 
-              ${activeImage === url ? "border-indigo-500" : "border-zinc-200 dark:border-zinc-800"}
+              ${activeImage === url ? "border-[#3ABDE7]/80" : "border-zinc-200 dark:border-zinc-800"}
             `}
                     >
                       <img
@@ -123,7 +123,7 @@ export default function ViewProductPage() {
           <div className="col-span-2 space-y-6">
             <div>
               <h2 className="text-3xl font-bold text-zinc-950 dark:text-white">{singleProduct.name}</h2>
-              <div className="inline-block mt-2 px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20">
+              <div className="inline-block mt-2 px-3 py-1 bg-[#3ABDE7]/10 dark:bg-[#3ABDE7]/10 text-[#3ABDE7] dark:text-[#3ABDE7] rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20">
                 {singleProduct.category || "Uncategorized"}
               </div>
             </div>

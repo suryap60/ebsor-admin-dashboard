@@ -87,7 +87,7 @@ export default function SectionsPage() {
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage Terms and Privacy Policies.</p>
         </div>
         <Link href="/admin/policies/create">
-          <button className="cursor-pointer bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
+          <button className="cursor-pointer bg-[#3ABDE7] hover:bg-[#3ABDE7] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
             <Plus size={18} />
             Create Policies
           </button>
@@ -105,7 +105,7 @@ export default function SectionsPage() {
               setPage(1);
               setSearch(e.target.value);
             }}
-            className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-indigo-500 text-zinc-950 dark:text-white transition-colors"
+            className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-[#3ABDE7]/80 text-zinc-950 dark:text-white transition-colors"
           />
         </div>
       </div>
@@ -125,14 +125,14 @@ export default function SectionsPage() {
                 {getIconForType(section.type)}
               </div>
               <div className="flex flex-col items-end gap-2">
-                <span className="text-xs font-medium px-2 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-md">
+                <span className="text-xs font-medium px-2 py-1 bg-indigo-50 dark:bg-[#3ABDE7]/10 text-indigo-600 dark:text-[#3ABDE7] rounded-md">
                   {formatType(section.type)}
                 </span>
               </div>
             </div>
 
             <div className="flex-1 mt-2">
-              <h3 className="text-lg font-semibold text-zinc-950 dark:text-white mb-1 group-hover:text-indigo-400 transition-colors">{section.title}</h3>
+              <h3 className="text-lg font-semibold text-zinc-950 dark:text-white mb-1 group-hover:text-[#3ABDE7]/80 transition-colors">{section.title}</h3>
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800 mt-4">
@@ -148,7 +148,7 @@ export default function SectionsPage() {
                 <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/policies/${section._id}`); }} title="View Details" className="p-2 cursor-pointer rounded-lg transition-colors text-zinc-600 dark:text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10">
                   <Eye size={16} />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/policies/edit/${section._id}`); }} title="Edit" className="cursor-pointer p-2 text-zinc-600 dark:text-zinc-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors">
+                <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/policies/edit/${section._id}`); }} title="Edit" className="cursor-pointer p-2 text-zinc-600 dark:text-zinc-400 hover:text-[#3ABDE7]/80 hover:bg-[#3ABDE7]/10 rounded-lg transition-colors">
                   <Edit size={16} />
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); handleDeleteClick(section._id); }} title="Delete" className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer rounded-lg transition-colors">

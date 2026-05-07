@@ -129,25 +129,29 @@ export default function EditFAQPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         onSubmit={handleSubmit}
-        className="bg-white dark:bg-zinc-950 border rounded-2xl p-6 space-y-8"
+        className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8 space-y-8"
       >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Title + Status */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <input
-            name="title"
-            defaultValue={singleSection.title}
-            required
-            className="w-full border rounded-xl px-4 py-3"
-          />
+        <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Section Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={singleSection.title}
+              placeholder="e.g. Terms and Conditions"
+              required
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
+            />
+          </div>
 
-          <select
-            name="isActive"
-            defaultValue={singleSection.isActive ? "true" : "false"}
-            className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
-          >
-            <option value="true">Active</option>
-            <option value="false">Draft</option>
-          </select>
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Status</label>
+            <select name="isActive" defaultValue={singleSection.isActive ? "true" : "false"} className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all">
+              <option value="true">Active</option>
+              <option value="false">Draft (Inactive)</option>
+            </select>
+          </div>
         </div>
 
         {/* FAQ Items */}
@@ -164,7 +168,7 @@ export default function EditFAQPage() {
           </div>
 
           {faqs.map((faq, index) => (
-            <div key={index} className="p-4 border rounded-xl flex gap-4">
+            <div key={index} className="p-4 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8  flex gap-4">
               <div className="flex-1 space-y-3">
                 <input
                   value={faq.question}
@@ -172,7 +176,7 @@ export default function EditFAQPage() {
                     handleFaqChange(index, "question", e.target.value)
                   }
                   placeholder="Question"
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
                 />
 
                 <textarea
@@ -182,7 +186,7 @@ export default function EditFAQPage() {
                   }
                   placeholder="Answer"
                   rows={3}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
                 />
               </div>
 
@@ -199,15 +203,15 @@ export default function EditFAQPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-4 pt-4 border-t">
-          <button type="button" onClick={() => router.back()}>
+        <div className="flex justify-end gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+          <button type="button" onClick={() => router.back()} className="cursor-pointer">
             Cancel
           </button>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-indigo-600 text-white px-6 py-2 rounded-xl flex gap-2"
+            className="cursor-pointer bg-[#3ABDE7] text-white px-6 py-2 rounded-xl flex gap-2"
           >
             <Save size={18} />
             {isSubmitting ? "Updating..." : "Update FAQ"}

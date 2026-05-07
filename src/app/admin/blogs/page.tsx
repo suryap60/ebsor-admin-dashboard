@@ -66,7 +66,7 @@ export default function BlogsPage() {
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage your blog posts, drafts, and categories.</p>
         </div>
         <Link href="/admin/blogs/create">
-          <button className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
+          <button className="bg-[#3ABDE7] hover:bg-[#3ABDE7] cursor-pointer text-zinc-50 dark:text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-medium">
             <Plus size={18} />
             Create Blog
           </button>
@@ -80,7 +80,7 @@ export default function BlogsPage() {
             <input
               type="text"
               placeholder="Search blogs..."
-              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-9 pr-4 py-1.5 text-sm outline-none focus:border-indigo-500 text-zinc-950 dark:text-white transition-colors"
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-9 pr-4 py-1.5 text-sm outline-none focus:border-[#3ABDE7]/80 text-zinc-950 dark:text-white transition-colors"
             />
           </div>
           <div className="flex gap-2">

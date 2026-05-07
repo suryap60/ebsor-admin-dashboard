@@ -84,7 +84,7 @@ export default function AdminDashboard() {
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium text-zinc-950 dark:text-white">Recent Activity</h2>
-          <Link href="/admin/applications" className="text-sm cursor-pointer text-indigo-400 hover:text-indigo-300">View All</Link>
+          <Link href="/admin/applications" className="text-sm cursor-pointer text-[#3ABDE7] hover:text-[#3ABDE7]/80">View All</Link>
         </div>
 
         <div className="space-y-4">
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
             applications.slice(0, 5).map((app, i) => (
               <div key={app._id || i} className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:border-zinc-200 dark:border-zinc-800 transition-colors group">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                  <div className="w-10 h-10 rounded-full bg-[#3ABDE7]/10 flex items-center justify-center text-[#3ABDE7]">
                     <UserIcon />
                   </div>
                   <div>

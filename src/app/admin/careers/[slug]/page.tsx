@@ -52,7 +52,7 @@ export default function ViewCareerPage() {
         </div>
 
         <Link href={`/admin/careers/edit/${singleJob._id}`}>
-          <button className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
+          <button className="bg-[#3ABDE7] hover:bg-[#3ABDE7] cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20">
             <Edit size={18} />
             Edit Job
           </button>
@@ -63,7 +63,7 @@ export default function ViewCareerPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8"
+        className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8 "
       >
         <div className="space-y-6">
           <div>
@@ -71,7 +71,7 @@ export default function ViewCareerPage() {
               {singleJob.title}
             </h2>
             <div className="flex flex-wrap gap-4 mt-4">
-              <span className="inline-block px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20 capitalize">
+              <span className="inline-block  px-3 py-1 bg-indigo-50 dark:bg-[#3ABDE7]/10 text-indigo-600 dark:text-[#3ABDE7] rounded-lg text-sm font-medium border border-indigo-100 dark:border-indigo-500/20 capitalize">
                 {singleJob.department || "N/A"}
               </span>
               <span className="inline-block px-3 py-1 bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 rounded-lg text-sm font-medium border border-zinc-200 dark:border-zinc-800">
@@ -100,13 +100,13 @@ export default function ViewCareerPage() {
           <div>
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Job Description & Requirements</h3>
             <div
-              className="prose dark:prose-invert max-w-none text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap leading-relaxed"
+              className="prose dark:prose-invert max-w-5xl text-zinc-600 break-words dark:text-zinc-400 whitespace-pre-wrap leading-relaxed"
               dangerouslySetInnerHTML={{ __html: singleJob.description }}
             />
           </div>
 
           {/* Footer Info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">
             <div>
               <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Slug</h3>
               <p className="text-zinc-900 dark:text-zinc-100 font-mono text-sm">{singleJob.slug}</p>
@@ -121,7 +121,7 @@ export default function ViewCareerPage() {
                 {singleJob.createdAt ? new Date(singleJob.createdAt).toLocaleDateString() : "N/A"}
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </motion.div>
     </div>

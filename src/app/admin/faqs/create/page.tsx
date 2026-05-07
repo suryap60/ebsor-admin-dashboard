@@ -188,7 +188,7 @@ export default function CreateFAQPage() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-indigo-600 text-white px-6 py-2 rounded-xl flex gap-2 items-center"
+            className="bg-[#3ABDE7] text-white px-6 py-2 rounded-xl flex gap-2 items-center"
           >
             <Save size={18} />
             {loading ? "Saving..." : "Save FAQ"}

@@ -64,7 +64,7 @@ export default function ApplicationsPage() {
                 setPage(1); // reset page
                 setSearch(e.target.value);
               }}
-              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-9 pr-4 py-1.5 text-sm outline-none focus:border-indigo-500 text-zinc-950 dark:text-white transition-colors"
+              className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg pl-9 pr-4 py-1.5 text-sm outline-none focus:border-[#3ABDE7]/80 text-zinc-950 dark:text-white transition-colors"
             />
           </div>
           {/* <div className="flex items-center gap-2">

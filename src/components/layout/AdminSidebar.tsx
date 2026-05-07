@@ -77,7 +77,7 @@ export default function AdminSidebar() {
                   : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800/50"
                 }`}
             >
-              <Icon size={20} className={isActive ? "text-indigo-400" : "text-zinc-500 group-hover:text-zinc-700 dark:text-zinc-300 transition-colors"} />
+              <Icon size={20} className={isActive ? "text-[#3ABDE7]" : "text-zinc-500 group-hover:text-zinc-700 dark:text-zinc-300 transition-colors"} />
               <span className="font-medium text-sm">{item.name}</span>
             </Link>
           );

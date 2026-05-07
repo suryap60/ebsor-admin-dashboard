@@ -52,7 +52,7 @@ export default function ViewBlogPage() {
         </div>
 
         <Link href={`/admin/blogs/edit/${singleBlog._id}`}>
-          <button className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2">
+          <button className="bg-[#3ABDE7] hover:bg-[#3ABDE7] cursor-pointer text-white px-4 py-2 rounded-xl flex items-center gap-2">
             <Edit size={18} />
             Edit Blog
           </button>

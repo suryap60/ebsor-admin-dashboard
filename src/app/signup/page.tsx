@@ -35,9 +35,9 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-[#f8f9fa] dark:bg-black flex items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative Background */}
-      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-indigo-500/20 to-transparent pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-[#3ABDE7]/20 to-transparent pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-[#3ABDE7]/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-[#3ABDE7]/10 blur-[100px] rounded-full pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -46,7 +46,7 @@ export default function SignupPage() {
         className="w-full max-w-md bg-white/80 dark:bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 relative z-10 shadow-2xl"
       >
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-zinc-950 dark:text-white font-bold text-xl mx-auto mb-4 shadow-lg shadow-indigo-500/20">
+          <div className="w-12 h-12 bg-[#3ABDE7] rounded-xl flex items-center justify-center text-zinc-950 dark:text-white font-bold text-xl mx-auto mb-4 shadow-lg shadow-indigo-500/20">
             A
           </div>
           <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Create an Account</h1>
@@ -65,7 +65,7 @@ export default function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="John Doe"
-                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-4 py-3 text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-4 py-3 text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#3ABDE7]/80  transition-all"
               />
             </div>
           </div>
@@ -80,7 +80,7 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-4 py-3 text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-4 py-3 text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#3ABDE7]/80  transition-all"
               />
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-12 py-3 text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-12 py-3 text-zinc-950 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#3ABDE7]/80  transition-all"
               />
               <button
                 type="button"
@@ -110,7 +110,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="cursor-pointer w-full bg-indigo-600 hover:bg-indigo-500 text-zinc-950 dark:text-white rounded-xl py-3 font-medium transition-colors mt-6 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer w-full bg-[#3ABDE7] hover:bg-[#3ABDE7] text-zinc-950 dark:text-white rounded-xl py-3 font-medium transition-colors mt-6 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Creating Account..." : "Create Account"}
             {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
@@ -119,7 +119,7 @@ export default function SignupPage() {
 
         <p className="text-center text-sm text-zinc-600 dark:text-zinc-400 mt-8">
           Already have an account?{" "}
-          <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-medium cursor-pointer">
+          <Link href="/login" className="text-[#3ABDE7] hover:text-[#3ABDE7]/80 font-medium cursor-pointer">
             Sign in
           </Link>
         </p>
