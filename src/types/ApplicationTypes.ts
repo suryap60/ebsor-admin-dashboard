@@ -9,13 +9,27 @@ export interface Job {
 
 export interface Application {
   _id: string;
-  name: string;
+
+  firstName: string;
+  lastName?: string;
+
   email: string;
   phone: string;
+
+  country?: string;
+  state?: string;
+  place?: string;
+
+  experience?: number;
+
+  additionalInfo?: string;
+
   resume: string;
-  coverLetter: string;
-  status: string;
+
+  status: "pending" | "reviewed" | "rejected" | "selected";
+
   createdAt: string;
+
   job: Job;
 }
 

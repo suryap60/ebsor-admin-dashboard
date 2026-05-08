@@ -111,7 +111,7 @@ export default function ProductsPage() {
                     <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
                       {product.images && product.images.length > 0 ? (
                         <img 
-                          src={`http://localhost:5000${product.images[0]}`}
+                          src={product.images[0]}
                           alt={product.name} 
                           className="w-full h-full object-cover" 
                         />

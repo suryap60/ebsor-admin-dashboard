@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getApplicationById, updateApplicationStatusThunk } from "@/src/store/slices/ApplicationSlice";
 import { toast } from "react-toastify";
+import { IoLocation } from "react-icons/io5";
 
 export default function ApplicationDetailPage() {
     const router = useRouter();
@@ -17,14 +18,14 @@ export default function ApplicationDetailPage() {
 
 
     const id = params?.id as string;
-    
+
 
     useEffect(() => {
         if (!id) return;
         dispatch(getApplicationById(id));
     }, [id, dispatch]);
 
-    
+
 
     const { singleApplication, loading, error } = useAppSelector(
         (state) => state.applications
@@ -43,10 +44,10 @@ export default function ApplicationDetailPage() {
 
         try {
             await dispatch(
-            updateApplicationStatusThunk({
-                id: singleApplication._id,
-                status,
-            })
+                updateApplicationStatusThunk({
+                    id: singleApplication._id,
+                    status,
+                })
             ).unwrap();
 
             toast.success("Status updated successfully");
@@ -76,11 +77,11 @@ export default function ApplicationDetailPage() {
                     </div>
                 </div>
                 <button
-                onClick={handleUpdate}
-                className="bg-[#3ABDE7] cursor-pointer hover:bg-[#3ABDE7] text-white px-6 py-2.5 rounded-xl flex items-center gap-2"
+                    onClick={handleUpdate}
+                    className="bg-[#3ABDE7] cursor-pointer hover:bg-[#3ABDE7] text-white px-6 py-2.5 rounded-xl flex items-center gap-2"
                 >
                     <Save size={18} />
-                Update Status
+                    Update Status
                 </button>
             </div>
 
@@ -96,12 +97,13 @@ export default function ApplicationDetailPage() {
                                 DC
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-zinc-950 dark:text-white">{singleApplication.name}</h2>
+                                <h2 className="text-xl font-bold text-zinc-950 dark:text-white">{singleApplication.firstName}{singleApplication.lastName}</h2>
                                 <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-1">Applying for <span className="font-medium text-zinc-950 dark:text-zinc-300">{singleApplication?.job?.title}</span></p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            
                             <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
                                 <Mail size={16} /> {singleApplication.email}
                             </div>
@@ -111,15 +113,27 @@ export default function ApplicationDetailPage() {
                             <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
                                 <Calendar size={16} /> Applied on {new Date(singleApplication.createdAt).toLocaleDateString("en-IN")}
                             </div>
-                            {/* <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
-                  <User size={16} /> Portfolio: github.com/davidc
-               </div> */}
+                            <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+                                <Calendar size={16} />
+                                Experience: {singleApplication.experience || 0} years
+                            </div>
+                            <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+                                <IoLocation size={16} />
+                                {singleApplication.place}, {singleApplication.state},{" "}
+                                {singleApplication.country}
+                            </div>
+                            
                         </div>
 
                         <div className="pt-6 border-t border-zinc-200 dark:border-zinc-800/50">
-                            <h3 className="text-zinc-950 dark:text-white font-semibold mb-3">Cover Letter</h3>
+                            <h3 className="text-zinc-950 dark:text-white font-semibold mb-3">
+                                Additional Information
+                            </h3>
+
                             <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border border-zinc-200 dark:border-zinc-800">
-                                <p>{singleApplication.coverLetter}</p>
+                                <p>
+                                    {singleApplication.additionalInfo || "No additional information"}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -143,27 +157,41 @@ export default function ApplicationDetailPage() {
                         >
                             <option value="pending">Pending</option>
                             <option value="reviewed">Reviewed</option>
-                            <option value="shortlisted">Shortlisted</option>
+                            <option value="selected">Selected</option>
                             <option value="rejected">Rejected</option>
-                            <option value="hired">Hired</option>
                         </select>
                     </div>
 
                     <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6">
-                        <h3 className="text-zinc-950 dark:text-white font-semibold mb-4">Resume Attachment</h3>
-                        <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex items-center justify-between group hover:border-[#3ABDE7]/80 transition-colors">
+                        <h3 className="text-zinc-950 dark:text-white font-semibold mb-4">
+                            Resume Attachment
+                        </h3>
+
+                        <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-indigo-50 dark:bg-[#3ABDE7]/10 text-indigo-600 dark:text-[#3ABDE7] rounded-lg">
                                     <FileText size={20} />
                                 </div>
+
                                 <div>
-                                    <p className="text-sm font-medium text-zinc-950 dark:text-white">david_chen_resume.pdf</p>
-                                    <p className="text-xs text-zinc-500">2.4 MB</p>
+                                    <p className="text-sm font-medium text-zinc-950 dark:text-white">
+                                        Resume File
+                                    </p>
+
+                                    <p className="text-xs text-zinc-500">
+                                        Click download to open resume
+                                    </p>
                                 </div>
                             </div>
-                            <button className="text-zinc-400 hover:text-indigo-600 cursor-pointer dark:hover:text-[#3ABDE7]/80 transition-colors p-2">
+
+                            <a
+                                href={singleApplication.resume}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-zinc-400 hover:text-indigo-600 dark:hover:text-[#3ABDE7]/80 transition-colors p-2"
+                            >
                                 <Download size={18} />
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </motion.div>

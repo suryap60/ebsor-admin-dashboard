@@ -82,7 +82,7 @@ export default function EditProductPage() {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    const files = Array.from(e.target.files || []).slice(0, 5);
 
     setNewImages((prev) => [...prev, ...files]);
 

@@ -19,7 +19,7 @@ export default function CreateProductPage() {
   const { loading } = useAppSelector((state) => state.products);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    const files = Array.from(e.target.files || []).slice(0, 5);
 
     setImages(files);
     const previewUrls = files.map((file) => URL.createObjectURL(file));
@@ -140,7 +140,7 @@ export default function CreateProductPage() {
           <button type="button" onClick={() => router.back()} className="cursor-pointer px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
             Cancel
           </button>
-          <button type="submit" disabled={isSubmitting} className="cursor-pointer bg-indigo-500 hover:bg-indigo-500/90 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-[#3ABDE7]/20 disabled:opacity-50">
+          <button type="submit" disabled={isSubmitting} className="cursor-pointer bg-[#3ABDE7] hover:bg-[#3ABDE7]/90 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-[#3ABDE7]/20 disabled:opacity-50">
             <Save size={18} />
             {isSubmitting ? "Saving..." : "Save Product"}
           </button>

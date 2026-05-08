@@ -20,7 +20,7 @@ export default function ApplicationsPage() {
     (state) => state.applications
   );
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedAppId, setSelectedAppId] = useState<number | null>(null);
+  const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
@@ -32,7 +32,7 @@ export default function ApplicationsPage() {
     return () => clearTimeout(delay);
   }, [dispatch, page, search]);
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setSelectedAppId(id);
     setDeleteModalOpen(true);
   };
@@ -98,7 +98,7 @@ export default function ApplicationsPage() {
                 >
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="font-medium text-zinc-950 dark:text-white">{app.name}</span>
+                      <span className="font-medium text-zinc-950 dark:text-white">{app.firstName} {app.lastName}</span>
                       <span className="text-xs text-zinc-500">{app.email}</span>
                       <span className="text-xs text-zinc-500">{app.phone}</span>
                     </div>
@@ -107,12 +107,15 @@ export default function ApplicationsPage() {
                   <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400"> {new Date(app.createdAt).toLocaleDateString("en-IN")}</td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2 py-1 rounded text-xs ${app.status === "pending"
-                        ? "bg-yellow-100 text-yellow-600"
-                        : app.status === "reviewed"
-                          ? "bg-blue-100 text-blue-600"
-                          : "bg-green-100 text-green-600"
-                        }`}
+                      className={`px-2 py-1 rounded text-xs font-medium ${
+                        app.status === "pending"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : app.status === "reviewed"
+                          ? "bg-blue-100 text-blue-700"
+                          : app.status === "selected"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
                     >
                       {app.status}
                     </span>
@@ -122,7 +125,7 @@ export default function ApplicationsPage() {
                       <ActionMenu
                         actions={[
                           { label: "View Details", icon: <Eye size={16} />, onClick: () => router.push(`/admin/applications/${app._id}`) },
-                          { label: "Download Resume", icon: <Download size={16} />, onClick: () => console.log("Download", app._id) },
+                          { label: "Download Resume", icon: <Download size={16} />, onClick: () => window.open(app.resume, "_blank") },
                           { label: "Edit Application", icon: <Edit size={16} />, onClick: () => router.push(`/admin/applications/edit/${app._id}`) },
                           // { label: "Delete", icon: <Trash2 size={16} />, onClick: () => handleDeleteClick(app._id), destructive: true },
                         ]}

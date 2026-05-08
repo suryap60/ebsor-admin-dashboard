@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getApplicationById } from "@/src/store/slices/ApplicationSlice";
+import { IoLocation } from "react-icons/io5";
 
 export default function ApplicationDetailPage() {
     const router = useRouter();
@@ -65,12 +66,13 @@ export default function ApplicationDetailPage() {
                                 DC
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-zinc-950 dark:text-white">{singleApplication.name}</h2>
+                                <h2 className="text-xl font-bold text-zinc-950 dark:text-white">{singleApplication.firstName} {singleApplication.lastName}</h2>
                                 <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-1">Applying for <span className="font-medium text-zinc-950 dark:text-zinc-300">{singleApplication?.job?.title}</span></p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            
                             <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
                                 <Mail size={16} /> {singleApplication.email}
                             </div>
@@ -80,17 +82,27 @@ export default function ApplicationDetailPage() {
                             <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
                                 <Calendar size={16} /> Applied on {new Date(singleApplication.createdAt).toLocaleDateString("en-IN")}
                             </div>
-                            {/* <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
-                  <User size={16} /> Portfolio: github.com/davidc
-               </div> */}
+                            <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+                                <Calendar size={16} />
+                                Experience: {singleApplication.experience || 0} years
+                            </div>
+                            <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-400 text-sm">
+                                <IoLocation size={16} />
+                                {singleApplication?.place}, {singleApplication.state},{" "}
+                                {singleApplication.country}
+                            </div>
+                            
                         </div>
 
                         <div className="pt-6 border-t border-zinc-200 dark:border-zinc-800/50">
-                            <h3 className="text-zinc-950 dark:text-white font-semibold mb-3">Cover Letter</h3>
+                            <h3 className="text-zinc-950 dark:text-white font-semibold mb-3">
+                                Additional Information
+                            </h3>
+
                             <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border border-zinc-200 dark:border-zinc-800">
-                                <p>{singleApplication.coverLetter}</p>
-                                {/* <p className="mt-2">I am writing to express my strong interest in the Senior Frontend Developer position at your company. With over 5 years of dedicated experience building scalable React applications and a deep understanding of Next.js, I am confident in my ability to immediately contribute to your team.</p>
-                  <p className="mt-2">I have attached my resume for your consideration. Thank you for your time.</p> */}
+                                <p>
+                                    {singleApplication.additionalInfo || "No additional information"}
+                                </p>
                             </div>
                         </div>
                     </div>
