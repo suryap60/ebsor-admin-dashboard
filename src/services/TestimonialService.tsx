@@ -15,12 +15,20 @@ export const fetchTestimonialById = async (id: string) => {
 };
 
 export const createTestimonial = async (data: any) => {
-  const res = await api.post("/testimonials", data);
+  const res = await api.post("/testimonials", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
 export const updateTestimonial = async (id: string, data: any) => {
-  const res = await api.put(`/testimonials/${id}`, data);
+  const res = await api.put(`/testimonials/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 

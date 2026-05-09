@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, ImageIcon, Save, Upload } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
@@ -9,12 +9,18 @@ import { getTestimonialById, updateTestimonialThunk } from "@/src/store/slices/T
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
+
 export default function EditTestimonialPage() {
     const router = useRouter();
     const params = useParams();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [description, setDescription] = useState("");
     const [rating, setRating] = useState(5);
+    const [imagePreview, setImagePreview] =
+        useState<string | null>(null);
+
+    const [image, setImage] =
+        useState<File | null>(null);
 
     const dispatch = useAppDispatch();
     const { singleTestimonial, loading } = useAppSelector((state) => state.testimonials);
@@ -26,51 +32,71 @@ export default function EditTestimonialPage() {
     }, [dispatch, params.id]);
 
     useEffect(() => {
+        if (singleTestimonial?.image) {
+            setImagePreview(singleTestimonial.image);
+        }
+    }, [singleTestimonial]);
+
+    useEffect(() => {
         if (singleTestimonial) {
             setDescription(singleTestimonial.description || "");
             setRating(singleTestimonial.rating || 5);
         }
     }, [singleTestimonial]);
 
+    const handleImageChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = e.target.files?.[0];
+
+        if (file) {
+            setImage(file);
+
+            setImagePreview(
+                URL.createObjectURL(file)
+            );
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!singleTestimonial?._id) return;
 
         setIsSubmitting(true);
-        const formData = new FormData(e.currentTarget);
+        const formData = new FormData();
 
-        const payload = {
-            name: formData.get("name") as string,
-            designation: formData.get("designation") as string,
-            rating: rating,
-            description: description,
-        };
+        const form = e.currentTarget;
+
+        formData.append(
+            "name",
+            (form.elements.namedItem("name") as HTMLInputElement).value
+        );
+        formData.append(
+            "designation",
+            (form.elements.namedItem("designation") as HTMLInputElement).value
+        );
+        formData.append("description", description);
+        formData.append("rating", String(rating));
+
+        if (image) {
+        formData.append("image", image);
+        }
 
         try {
             await dispatch(updateTestimonialThunk({
                 id: singleTestimonial._id,
-                data: payload
+                data: formData
             })).unwrap();
 
             toast.success("Testimonial updated successfully");
 
             router.push("/admin/testimonials");
-        } catch (error: unknown) {
-            console.error(error);
+        } catch (error: any) {
+        const message =
+            error?.response?.data?.message ||
+            error?.message 
 
-            if (error instanceof AxiosError) {
-                const message =
-                    error.response?.data?.message ||
-                    "Something went wrong";
-
-                if (error.response?.status === 403) {
-                    toast.error("You are not authorized to perform this action 🚫");
-                } else {
-                    toast.error(message);
-                }
-            } else {
-                toast.error("Unexpected error occurred");
-            }
+        toast.error(message);
         } finally {
             setIsSubmitting(false);
         }
@@ -146,6 +172,30 @@ export default function EditTestimonialPage() {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6">
+                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-4">Cover Image</label>
+                    <label className="border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all cursor-pointer group block relative overflow-hidden min-h-[240px]">
+                        <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                        {imagePreview ? (
+                            <div className="absolute inset-0 w-full h-full">
+                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-zinc-950/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]">
+                                    <Upload size={24} className="text-white mb-2" />
+                                    <span className="text-sm font-medium text-white">Change Image</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-4 group-hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors mx-auto">
+                                    <ImageIcon size={28} className="text-zinc-500" />
+                                </div>
+                                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Click to upload or drag and drop</p>
+                                <p className="text-xs text-zinc-500">SVG, PNG, JPG or GIF (max. 5MB)</p>
+                            </>
+                        )}
+                    </label>
                 </div>
 
                 <div>

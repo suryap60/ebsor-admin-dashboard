@@ -4,6 +4,7 @@ export interface Testimonial {
   designation: string;
   description: string;
   rating: number;
+  image:string;
   createdAt?: string;
   updatedAt?: string;
 }
