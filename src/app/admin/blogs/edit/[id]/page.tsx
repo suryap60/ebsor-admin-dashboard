@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getBlogById } from "@/src/store/slices/BlogSlice";
 import { BlogPayload } from "@/src/types/Blog";
 import { toast } from "react-toastify";
+import { updateBlog } from "@/src/services/BlogService";
 
 export default function EditBlogPage() {
     const router = useRouter();
@@ -17,6 +18,7 @@ export default function EditBlogPage() {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [content, setContent] = useState("");
+    const [featuredImage, setFeaturedImage] = useState<File | null>(null);
 
     const dispatch = useAppDispatch();
     const { singleBlog, loading } = useAppSelector((state) => state.blogs);
@@ -47,22 +49,40 @@ export default function EditBlogPage() {
         setIsSubmitting(true);
         const formData = new FormData(e.currentTarget);
 
-        const payload : BlogPayload = {
-            title: formData.get("title") as string,
-            excerpt: formData.get("excerpt") as string,
-            author: formData.get("author") as string,
-            status: formData.get("status") as "draft" | "published",
-            content: content,
-            tags: singleBlog.tags?.length > 0 ? singleBlog.tags : ["blog"],
-        };
+        // const payload : BlogPayload = {
+        //     title: formData.get("title") as string,
+        //     excerpt: formData.get("excerpt") as string,
+        //     author: formData.get("author") as string,
+        //     status: formData.get("status") as "draft" | "published",
+        //     content: content,
+        //     tags: singleBlog.tags?.length > 0 ? singleBlog.tags : ["blog"],
+        // };
 
-        if (imagePreview) {
-            payload.featuredImage = imagePreview;
-        }
+        // if (imagePreview) {
+        //     payload.featuredImage = imagePreview;
+        // }
+
+        formData.append("content", content);
+
+        const tags =
+            (formData.get("tags") as string)
+            ?.split(",")
+            .map((t) => t.trim()) || [];
+
+        tags.forEach((tag) => {
+            formData.append("tags[]", tag);
+        });
+
+        // upload new image only if selected
+        if (featuredImage) {
+            formData.append(
+            "featuredImage",
+            featuredImage
+            );
+        } 
 
         try {
-            const { updateBlog } = await import("@/src/services/BlogService");
-            await updateBlog(singleBlog._id, payload);
+            await updateBlog(singleBlog._id, formData);
             toast.success("Blog updated successfully");
             router.push("/admin/blogs");
         } catch (error: any) {
@@ -76,11 +96,11 @@ export default function EditBlogPage() {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            setFeaturedImage(file);
+
+            setImagePreview(
+            URL.createObjectURL(file)
+            );
         }
     };
 

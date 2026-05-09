@@ -23,12 +23,20 @@ export const fetchBlogById = async (id: string) => {
 };
 
 export const createBlog = async (data: any) => {
-  const res = await api.post("/blogs", data);
+  const res = await api.post("/blogs", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
 export const updateBlog = async (id: string, data: any) => {
-  const res = await api.put(`/blogs/${id}`, data);
+  const res = await api.put(`/blogs/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
