@@ -135,7 +135,26 @@ export default function ViewProductPage() {
 
             <div>
               <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Full Description</h3>
-              <p className="text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap leading-relaxed">{singleProduct.description || "N/A"}</p>
+              <div
+                className="
+                  prose dark:prose-invert max-w-none
+                  prose-headings:text-zinc-900 dark:prose-headings:text-white
+                  prose-p:text-zinc-700 dark:prose-p:text-zinc-300
+                  prose-strong:text-zinc-900 dark:prose-strong:text-white
+                  prose-li:text-zinc-700 dark:prose-li:text-zinc-300
+                  prose-a:text-[#3ABDE7]
+                  prose-img:rounded-xl
+                  prose-img:w-full
+                  prose-img:max-w-full
+                  prose-pre:bg-zinc-900
+                  prose-code:text-pink-500
+                  overflow-hidden
+                  break-words
+                "
+                dangerouslySetInnerHTML={{
+                  __html: singleProduct.description || "<p>N/A</p>",
+                }}
+              />  
             </div>
 
             {/* <div className="grid grid-cols-2 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800">

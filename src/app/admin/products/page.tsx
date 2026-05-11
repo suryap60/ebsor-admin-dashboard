@@ -122,8 +122,8 @@ export default function ProductsPage() {
                     <div className="font-medium text-zinc-950 dark:text-white">{product.name}</div>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 max-w-[200px] truncate" title={product.description}>
-                  {product.description}
+                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 max-w-[200px] truncate" title={product.shortDescription}>
+                  {product.shortDescription}
                 </td>
                 <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{product.category}</td>
                 {/* <td className="px-6 py-4">

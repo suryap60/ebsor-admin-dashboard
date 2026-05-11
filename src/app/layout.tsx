@@ -5,6 +5,7 @@ import { ThemeProvider } from "../components/ThemeProvider";
 import { StoreProvider } from "../components/StoreProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "react-quill-new/dist/quill.snow.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

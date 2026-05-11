@@ -56,7 +56,7 @@ export default function ViewBlogPage() {
             <Edit size={18} />
             Edit Blog
           </button>
-        </Link> 
+        </Link>
       </div>
 
       {/* Content */}
@@ -68,7 +68,7 @@ export default function ViewBlogPage() {
         <div className="space-y-6">
 
           {/* Image */}
-          {singleBlog.featuredImage && (
+          {singleBlog?.featuredImage && (
             <div className="w-full h-[300px] rounded-xl overflow-hidden">
               <img
                 src={singleBlog.featuredImage}
@@ -90,11 +90,10 @@ export default function ViewBlogPage() {
               {new Date(singleBlog.createdAt).toLocaleDateString()}
             </span>
             <span
-              className={`px-2 py-1 rounded ${
-                singleBlog.status === "published"
-                  ? "bg-green-100 text-green-600"
-                  : "bg-yellow-100 text-yellow-600"
-              }`}
+              className={`px-2 py-1 rounded ${singleBlog.status === "published"
+                ? "bg-green-100 text-green-600"
+                : "bg-yellow-100 text-yellow-600"
+                }`}
             >
               {singleBlog.status}
             </span>
@@ -119,8 +118,24 @@ export default function ViewBlogPage() {
 
           {/* Content (IMPORTANT) */}
           <div
-            className="prose dark:prose-invert max-w-screen overflow-hidden break-words"
-            dangerouslySetInnerHTML={{ __html: singleBlog.content }}
+            className="
+              prose dark:prose-invert max-w-none
+              prose-headings:text-zinc-900 dark:prose-headings:text-white
+              prose-p:text-zinc-700 dark:prose-p:text-zinc-300
+              prose-strong:text-zinc-900 dark:prose-strong:text-white
+              prose-li:text-zinc-700 dark:prose-li:text-zinc-300
+              prose-a:text-[#3ABDE7]
+              prose-img:rounded-xl
+              prose-img:w-full
+              prose-img:max-w-full
+              prose-pre:bg-zinc-900
+              prose-code:text-pink-500
+              overflow-hidden
+              break-words
+            "
+            dangerouslySetInnerHTML={{
+              __html: singleBlog?.content,
+            }}
           />
 
         </div>

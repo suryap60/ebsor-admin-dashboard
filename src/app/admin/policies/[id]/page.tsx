@@ -112,7 +112,21 @@ export default function ViewSectionPage() {
             ) : (
               <div className="p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl">
                 <div
-                  className="prose dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300"
+                  className="
+                    prose dark:prose-invert max-w-none
+                    prose-headings:text-zinc-900 dark:prose-headings:text-white
+                    prose-p:text-zinc-700 dark:prose-p:text-zinc-300
+                    prose-strong:text-zinc-900 dark:prose-strong:text-white
+                    prose-li:text-zinc-700 dark:prose-li:text-zinc-300
+                    prose-a:text-[#3ABDE7]
+                    prose-img:rounded-xl
+                    prose-img:w-full
+                    prose-img:max-w-full
+                    prose-pre:bg-zinc-900
+                    prose-code:text-pink-500
+                    overflow-hidden
+                    break-words
+                  "
                   dangerouslySetInnerHTML={{ __html: singleSection.content || "<p>No content provided.</p>" }}
                 />
               </div>

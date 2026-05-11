@@ -8,7 +8,7 @@ export interface Section {
   _id: string;
   title: string;
   slug: string;
-  type: "terms" | "faq" | "privacy";
+  type: "terms" | "faq" | "privacy" | "refund";
   content?: string;
   faqs?: FAQ[];
   isActive: boolean;

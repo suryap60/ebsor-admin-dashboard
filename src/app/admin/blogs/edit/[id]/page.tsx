@@ -66,12 +66,13 @@ export default function EditBlogPage() {
 
         const tags =
             (formData.get("tags") as string)
-            ?.split(",")
-            .map((t) => t.trim()) || [];
+                ?.split(",")
+                .map((t) => t.trim())
+                .filter(Boolean) || [];
 
-        tags.forEach((tag) => {
-            formData.append("tags[]", tag);
-        });
+            formData.delete("tags");
+
+            formData.append("tags", JSON.stringify(tags));
 
         // upload new image only if selected
         if (featuredImage) {

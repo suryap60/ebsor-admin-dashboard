@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { addProduct } from "@/src/store/slices/ProductSlice";
 import { toast } from "react-toastify";
+import RichTextEditor from "@/src/components/RichTextEditor";
 
 export default function CreateProductPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function CreateProductPage() {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreview, setImagePreview] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [description, setDescription] = useState("");
 
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.products);
@@ -31,6 +33,8 @@ export default function CreateProductPage() {
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+
+    formData.append("description", description);
 
     images.forEach((file) => {
       formData.append("images", file);
@@ -84,8 +88,15 @@ export default function CreateProductPage() {
               <input type="text" name="category" required placeholder="Mobile, Software, etc." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Description</label>
-              <textarea name="description" rows={4} required placeholder="Detailed product description..." className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all resize-none"></textarea>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                Description
+              </label>
+
+              <RichTextEditor
+                value={description}
+                onChange={setDescription}
+                placeholder="Detailed product description..."
+              />
             </div>
           </div>
 

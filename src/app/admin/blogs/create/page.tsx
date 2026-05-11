@@ -58,11 +58,12 @@ export default function CreateBlogPage() {
     const tags =
       (formData.get("tags") as string)
         ?.split(",")
-        .map((t) => t.trim()) || [];
+        .map((t) => t.trim())
+        .filter(Boolean) || [];
 
-    tags.forEach((tag) => {
-      formData.append("tags[]", tag);
-    });
+    formData.delete("tags");
+
+    formData.append("tags", JSON.stringify(tags));
 
     if (featuredImage) {
       formData.append(
@@ -198,7 +199,7 @@ export default function CreateBlogPage() {
         </div>
 
         <div className="flex items-center justify-end gap-4 pt-4 border-t border-zinc-200 dark:border-zinc-800/50">
-          <button onClick={() => router.back()} className="cursor-pointer px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
+          <button type="button" onClick={() => router.back()} className="cursor-pointer px-6 py-2.5 rounded-xl text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
             Cancel
           </button>
           <button type="submit" disabled={isSubmitting} className="bg-[#3ABDE7] cursor-pointer hover:bg-[#3ABDE7] text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-medium transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50">
