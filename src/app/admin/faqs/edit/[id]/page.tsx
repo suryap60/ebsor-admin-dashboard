@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
@@ -9,6 +9,7 @@ import {
   getSectionById,
   updateSectionThunk,
 } from "@/src/store/slices/SectionSlice";
+import ConfirmModal from "@/src/components/ConfirmModal";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
@@ -23,6 +24,9 @@ export default function EditFAQPage() {
 
   const [faqs, setFaqs] = useState([{ question: "", answer: "", category: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [faqToDeleteIndex, setFaqToDeleteIndex] = useState<number | null>(null);
+  const endOfListRef = useRef<HTMLDivElement>(null);
 
   // Fetch FAQ
   useEffect(() => {
@@ -42,10 +46,22 @@ export default function EditFAQPage() {
 
   const handleAddFaq = () => {
     setFaqs([...faqs, { question: "", answer: "", category: "" }]);
+    setTimeout(() => {
+      endOfListRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const handleRemoveFaq = (index: number) => {
-    setFaqs(faqs.filter((_, i) => i !== index));
+    setFaqToDeleteIndex(index);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDeleteFaq = () => {
+    if (faqToDeleteIndex !== null) {
+      setFaqs(faqs.filter((_, i) => i !== faqToDeleteIndex));
+      setFaqToDeleteIndex(null);
+    }
+    setDeleteModalOpen(false);
   };
 
   const handleFaqChange = (
@@ -214,6 +230,7 @@ export default function EditFAQPage() {
               )}
             </div>
           ))}
+          <div ref={endOfListRef} />
         </div>
 
         {/* Actions */}
@@ -232,6 +249,17 @@ export default function EditFAQPage() {
           </button>
         </div>
       </motion.form>
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setFaqToDeleteIndex(null);
+        }}
+        onConfirm={confirmDeleteFaq}
+        title="Delete FAQ"
+        message="Are you sure you want to delete this FAQ?"
+      />
     </div>
   );
 }

@@ -7,17 +7,20 @@ import { useRouter, useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getSectionById, updateSectionThunk } from "@/src/store/slices/SectionSlice";
 import RichTextEditor from "@/src/components/RichTextEditor";
+import ConfirmModal from "@/src/components/ConfirmModal";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
 export default function EditSectionPage() {
   const router = useRouter();
   const params = useParams();
-  
-  const [type, setType] = useState<"terms" | "faq" | "privacy">("terms");
+
+  const [type, setType] = useState<"terms" | "faq" | "privacy" | "refund">("terms");
   const [content, setContent] = useState("");
   const [faqs, setFaqs] = useState([{ question: "", answer: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [faqToDeleteIndex, setFaqToDeleteIndex] = useState<number | null>(null);
 
   const dispatch = useAppDispatch();
   const { singleSection, loading } = useAppSelector((state) => state.sections);
@@ -33,7 +36,7 @@ export default function EditSectionPage() {
       setType(singleSection.type);
       setContent(singleSection.content || "");
       if (singleSection.faqs && singleSection.faqs.length > 0) {
-          setFaqs(singleSection.faqs);
+        setFaqs(singleSection.faqs);
       }
     }
   }, [singleSection]);
@@ -43,7 +46,16 @@ export default function EditSectionPage() {
   };
 
   const handleRemoveFaq = (index: number) => {
-    setFaqs(faqs.filter((_, i) => i !== index));
+    setFaqToDeleteIndex(index);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDeleteFaq = () => {
+    if (faqToDeleteIndex !== null) {
+      setFaqs(faqs.filter((_, i) => i !== faqToDeleteIndex));
+      setFaqToDeleteIndex(null);
+    }
+    setDeleteModalOpen(false);
   };
 
   const handleFaqChange = (index: number, field: "question" | "answer", value: string) => {
@@ -140,14 +152,15 @@ export default function EditSectionPage() {
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Type</label>
-            <select 
-              value={type} 
-              onChange={(e) => setType(e.target.value as any)} 
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value as any)}
               className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
             >
               <option value="terms">Terms</option>
               <option value="privacy">Privacy</option>
               <option value="faq">FAQ</option>
+              <option value="refund">Refund</option>
             </select>
           </div>
         </div>
@@ -168,7 +181,7 @@ export default function EditSectionPage() {
                     <Plus size={16} /> Add FAQ
                   </button>
                 </div>
-                
+
                 <div className="space-y-4">
                   {faqs.map((faq, index) => (
                     <div key={index} className="p-4 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl flex items-start gap-4">
@@ -225,6 +238,17 @@ export default function EditSectionPage() {
           </button>
         </div>
       </motion.form>
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setFaqToDeleteIndex(null);
+        }}
+        onConfirm={confirmDeleteFaq}
+        title="Delete FAQ"
+        message="Are you sure you want to delete this FAQ?"
+      />
     </div>
   );
 }
