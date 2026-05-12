@@ -18,7 +18,7 @@ export default function SectionsPage() {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  
+
 
   const { sections, loading } = useAppSelector(
     (state) => state.sections
@@ -48,6 +48,20 @@ export default function SectionsPage() {
     }
   }
 
+  const getFaqCategories = (faq: any): string[] => {
+    if (!faq.faqs) return [];
+
+    return [
+      ...new Set(
+        faq.faqs.map((f: any) => f.category)
+      ),
+    ] as string[];
+  };
+
+  const getFaqCount = (faq: any) => {
+    return faq.faqs?.length || 0;
+  };
+
   const getIconForType = (type: string) => {
     switch (type) {
       case 'faq': return <HelpCircle size={20} className="text-zinc-600 dark:text-zinc-400" />;
@@ -69,20 +83,20 @@ export default function SectionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">FAQs</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage FAQ sections</p>
+          <p className="text-zinc-600 dark:text-zinc-400 text-sm">Manage FAQ categories and questions</p>
         </div>
         <Link href={hasFaq ? "#" : "/admin/faqs/create"}>
-            <button
-                disabled={hasFaq}
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors
+          <button
+            disabled={hasFaq}
+            className={`px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors
                 ${hasFaq
-                    ? "bg-zinc-300 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                    : "bg-[#3ABDE7] hover:bg-[#3ABDE7] text-white cursor-pointer"
-                }`}
-            >
-                <Plus size={18} />
-                Add FAQ
-            </button>
+                ? "bg-zinc-300 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                : "bg-[#3ABDE7] hover:bg-[#3ABDE7] text-white cursor-pointer"
+              }`}
+          >
+            <Plus size={18} />
+            Add FAQ
+          </button>
         </Link>
       </div>
 
@@ -122,8 +136,34 @@ export default function SectionsPage() {
               </div>
             </div>
 
-            <div className="flex-1 mt-2">
-              <h3 className="text-lg font-semibold text-zinc-950 dark:text-white mb-1 group-hover:text-[#3ABDE7]/80 transition-colors">{faq.title}</h3>
+            <div className="flex-1 mt-2 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-zinc-950 dark:text-white mb-1 group-hover:text-[#3ABDE7]/80 transition-colors">
+                  {faq.title}
+                </h3>
+
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {getFaqCount(faq)} FAQ items
+                </p>
+              </div>
+
+              {/* Categories */}
+              <div className="flex flex-wrap gap-2">
+                {getFaqCategories(faq).slice(0, 3).map((category: string) => (
+                    <span
+                      key={`${faq._id}-${category}`}
+                      className="px-2 py-1 rounded-md text-xs bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300"
+                    >
+                      {category}
+                    </span>
+                  ))}
+
+                {getFaqCategories(faq).length > 3 && (
+                  <span className="px-2 py-1 rounded-md text-xs bg-[#3ABDE7]/10 text-[#3ABDE7] border border-[#3ABDE7]/20">
+                    +{getFaqCategories(faq).length - 3} more
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800 mt-4">
@@ -142,7 +182,7 @@ export default function SectionsPage() {
                 <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/faqs/edit/${faq._id}`); }} title="Edit" className="cursor-pointer p-2 text-zinc-600 dark:text-zinc-400 hover:text-[#3ABDE7]/80 hover:bg-[#3ABDE7]/10 rounded-lg transition-colors">
                   <Edit size={16} />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); setSelectedId(faq._id);  setDeleteModalOpen(true); }} title="Delete" className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer rounded-lg transition-colors">
+                <button onClick={(e) => { e.stopPropagation(); setSelectedId(faq._id); setDeleteModalOpen(true); }} title="Delete" className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer rounded-lg transition-colors">
                   <Trash2 size={16} />
                 </button>
               </div>

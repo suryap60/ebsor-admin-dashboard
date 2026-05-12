@@ -21,7 +21,7 @@ export default function EditFAQPage() {
     (state) => state.sections
   );
 
-  const [faqs, setFaqs] = useState([{ question: "", answer: "" }]);
+  const [faqs, setFaqs] = useState([{ question: "", answer: "", category: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch FAQ
@@ -41,7 +41,7 @@ export default function EditFAQPage() {
   }, [singleSection]);
 
   const handleAddFaq = () => {
-    setFaqs([...faqs, { question: "", answer: "" }]);
+    setFaqs([...faqs, { question: "", answer: "", category: "" }]);
   };
 
   const handleRemoveFaq = (index: number) => {
@@ -50,7 +50,7 @@ export default function EditFAQPage() {
 
   const handleFaqChange = (
     index: number,
-    field: "question" | "answer",
+    field: "question" | "answer" | "category",
     value: string
   ) => {
     const updated = [...faqs];
@@ -68,10 +68,13 @@ export default function EditFAQPage() {
 
     const payload = {
       title: formData.get("title") as string,
-      type: "faq", // 🔥 LOCKED
+      type: "faq", // 
       isActive: formData.get("isActive") === "true",
       faqs: faqs.filter(
-        (f) => f.question.trim() && f.answer.trim()
+        (f) =>
+          f.question.trim() &&
+          f.answer.trim() &&
+          f.category.trim()
       ),
     };
 
@@ -84,7 +87,7 @@ export default function EditFAQPage() {
       ).unwrap();
 
       toast.success("FAQ updated successfully!");
-      router.push("/admin/faqs"); // 👈 important
+      router.push("/admin/faqs"); 
     } catch (error: unknown) {
       console.error(error);
       if (error instanceof AxiosError) {
@@ -161,7 +164,7 @@ export default function EditFAQPage() {
             <button
               type="button"
               onClick={handleAddFaq}
-              className="flex gap-1 text-indigo-600"
+              className="cursor-pointer flex gap-1 text-indigo-600"
             >
               <Plus size={16} /> Add
             </button>
@@ -171,7 +174,17 @@ export default function EditFAQPage() {
             <div key={index} className="p-4 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8  flex gap-4">
               <div className="flex-1 space-y-3">
                 <input
+                  value={faq.category}
+                  required
+                  onChange={(e) =>
+                    handleFaqChange(index, "category", e.target.value)
+                  }
+                  placeholder="Category"
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3"
+                />
+                <input
                   value={faq.question}
+                  required
                   onChange={(e) =>
                     handleFaqChange(index, "question", e.target.value)
                   }
@@ -181,6 +194,7 @@ export default function EditFAQPage() {
 
                 <textarea
                   value={faq.answer}
+                  required
                   onChange={(e) =>
                     handleFaqChange(index, "answer", e.target.value)
                   }

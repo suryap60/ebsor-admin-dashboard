@@ -97,16 +97,60 @@ export default function ViewSectionPage() {
           <div>
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-4">Content</h3>
             {singleSection.type === "faq" ? (
-              <div className="space-y-4">
+              <div className="space-y-8">
                 {singleSection.faqs && singleSection.faqs.length > 0 ? (
-                  singleSection.faqs.map((faq, index) => (
-                    <div key={index} className="p-5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl">
-                      <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">{faq.question}</h4>
-                      <p className="text-zinc-600 dark:text-zinc-400 text-sm whitespace-pre-wrap">{faq.answer}</p>
+                  Object.entries(
+                    singleSection.faqs.reduce(
+                      (acc, faq) => {
+                        const category = faq.category || "General";
+
+                        if (!acc[category]) {
+                          acc[category] = [];
+                        }
+
+                        acc[category].push(faq);
+
+                        return acc;
+                      },
+                      {} as Record<string, typeof singleSection.faqs>
+                    )
+                  ).map(([category, faqs]) => (
+                    <div key={category} className="space-y-4">
+
+                      {/* Category Title */}
+                      <div className="flex items-center gap-2">
+                        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
+
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-[#3ABDE7] whitespace-nowrap">
+                          {category}
+                        </h3>
+
+                        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
+                      </div>
+
+                      {/* FAQ Items */}
+                      <div className="space-y-4">
+                        {faqs.map((faq, index) => (
+                          <div
+                            key={`${category}-${index}`}
+                            className="p-5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl"
+                          >
+                            <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                              {faq.question}
+                            </h4>
+
+                            <p className="text-zinc-600 dark:text-zinc-400 text-sm whitespace-pre-wrap">
+                              {faq.answer}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-zinc-500 text-sm italic">No FAQs available.</p>
+                  <p className="text-zinc-500 text-sm italic">
+                    No FAQs available.
+                  </p>
                 )}
               </div>
             ) : (

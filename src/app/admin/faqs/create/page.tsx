@@ -15,10 +15,10 @@ export default function CreateFAQPage() {
 
   const { loading } = useAppSelector((state) => state.sections);
 
-  const [faqs, setFaqs] = useState([{ question: "", answer: "" }]);
+  const [faqs, setFaqs] = useState([{ question: "", answer: "", category:"" }]);
 
   const handleAddFaq = () => {
-    setFaqs([...faqs, { question: "", answer: "" }]);
+    setFaqs([...faqs, { question: "", answer: "", category: "", }]);
   };
 
   const handleRemoveFaq = (index: number) => {
@@ -27,7 +27,7 @@ export default function CreateFAQPage() {
 
   const handleFaqChange = (
     index: number,
-    field: "question" | "answer",
+    field: "question" | "answer" | "category",
     value: string
   ) => {
     const newFaqs = [...faqs];
@@ -45,14 +45,17 @@ export default function CreateFAQPage() {
       type: "faq",
       isActive: formData.get("isActive") === "true",
       faqs: faqs.filter(
-        (f) => f.question.trim() !== "" && f.answer.trim() !== ""
+        (f) =>
+          f.category.trim() !== "" &&
+          f.question.trim() !== "" &&
+          f.answer.trim() !== ""
       ),
     };
 
     try {
       await dispatch(addSection(payload)).unwrap();
       toast.success("FAQ created successfully!");
-      router.push("/admin/faqs"); // 👈 IMPORTANT (not sections)
+      router.push("/admin/faqs"); 
     } catch (error: unknown) {
       console.error("Failed to create FAQ", error);
       if (error instanceof AxiosError) {
@@ -127,7 +130,7 @@ export default function CreateFAQPage() {
             <button
               type="button"
               onClick={handleAddFaq}
-              className="flex items-center gap-1 text-sm text-indigo-600"
+              className="cursor-pointer flex items-center gap-1 text-sm text-indigo-600"
             >
               <Plus size={16} /> Add FAQ
             </button>
@@ -142,7 +145,19 @@ export default function CreateFAQPage() {
                 <div className="flex-1 space-y-3">
                   <input
                     type="text"
+                    value={faq.category}
+                    required
+                    onChange={(e) =>
+                      handleFaqChange(index, "category", e.target.value)
+                    }
+                    placeholder="Category (e.g. Billing & Payments)"
+                    className="w-full border rounded-lg px-3 py-2"
+                  />
+
+                  <input
+                    type="text"
                     value={faq.question}
+                    required
                     onChange={(e) =>
                       handleFaqChange(index, "question", e.target.value)
                     }
@@ -156,9 +171,11 @@ export default function CreateFAQPage() {
                       handleFaqChange(index, "answer", e.target.value)
                     }
                     placeholder="Answer"
+                    required
                     rows={3}
                     className="w-full border rounded-lg px-3 py-2"
                   />
+
                 </div>
 
                 {faqs.length > 1 && (

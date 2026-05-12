@@ -12,7 +12,7 @@ import { AxiosError } from "axios";
 
 export default function CreateSectionPage() {
   const router = useRouter();
-  const [type, setType] = useState<"terms" | "privacy">("terms");
+  const [type, setType] = useState<"terms" | "privacy" | "refund">("terms");
   const [content, setContent] = useState("");
   const [faqs, setFaqs] = useState([{ question: "", answer: "" }]);
 
@@ -72,7 +72,7 @@ export default function CreateSectionPage() {
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Create Policy/FAQ</h1>
+          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Create Policy</h1>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Add a new document section.</p>
         </div>
       </div>
@@ -112,6 +112,7 @@ export default function CreateSectionPage() {
             >
               <option value="terms">Terms</option>
               <option value="privacy">Privacy</option>
+              <option value="refund">Refund</option>
             </select>
           </div>
         </div>

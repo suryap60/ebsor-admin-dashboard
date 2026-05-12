@@ -14,7 +14,7 @@ export default function EditSectionPage() {
   const router = useRouter();
   const params = useParams();
   
-  const [type, setType] = useState<"terms" | "faq" | "privacy">("terms");
+  const [type, setType] = useState<"terms" | "faq" | "privacy" | "refund">("terms");
   const [content, setContent] = useState("");
   const [faqs, setFaqs] = useState([{ question: "", answer: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,7 +106,7 @@ export default function EditSectionPage() {
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Edit Policy/FAQ</h1>
+          <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Edit Policy</h1>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Update document section #{params.id}.</p>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function EditSectionPage() {
             >
               <option value="terms">Terms</option>
               <option value="privacy">Privacy</option>
-              <option value="faq">FAQ</option>
+              <option value="refund">Refund</option>
             </select>
           </div>
         </div>

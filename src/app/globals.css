@@ -42,6 +42,7 @@ body {
 .prose p {
   margin-bottom: 1rem;
   line-height: 1.8;
+  /* font-size: 18px; */
 }
 
 .prose ul {
