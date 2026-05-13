@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, Download, Eye, Filter, Edit, Trash2 } from "lucide-react";
+import { Search, Download, Eye, Edit } from "lucide-react";
 import ActionMenu from "@/src/components/ActionMenu";
-import ConfirmModal from "@/src/components/ConfirmModal";
 import Pagination from "@/src/components/Pagination";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -19,8 +18,6 @@ export default function ApplicationsPage() {
   const { applications, loading, pagination } = useAppSelector(
     (state) => state.applications
   );
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
@@ -31,17 +28,6 @@ export default function ApplicationsPage() {
 
     return () => clearTimeout(delay);
   }, [dispatch, page, search]);
-
-  const handleDeleteClick = (id: string) => {
-    setSelectedAppId(id);
-    setDeleteModalOpen(true);
-  };
-
-  const confirmDelete = () => {
-    console.log("Confirmed delete for application", selectedAppId);
-    setDeleteModalOpen(false);
-    setSelectedAppId(null);
-  };
 
   return (
     <div className="space-y-6">
@@ -145,14 +131,6 @@ export default function ApplicationsPage() {
           onPageChange={(p) => setPage(p)}
         />
       </div>
-
-      <ConfirmModal
-        isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        onConfirm={confirmDelete}
-        title="Delete Job Application"
-        message="Are you sure you want to delete this job application? All applicant info and resume attachments will be erased."
-      />
     </div>
   );
 }

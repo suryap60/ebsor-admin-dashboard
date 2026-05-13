@@ -9,29 +9,15 @@ import { addSection } from "@/src/store/slices/SectionSlice";
 import RichTextEditor from "@/src/components/RichTextEditor";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import Link from "next/link";
 
 export default function CreateSectionPage() {
   const router = useRouter();
   const [type, setType] = useState<"terms" | "privacy" | "refund">("terms");
   const [content, setContent] = useState("");
-  const [faqs, setFaqs] = useState([{ question: "", answer: "" }]);
 
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.sections);
-
-//   const handleAddFaq = () => {
-//     setFaqs([...faqs, { question: "", answer: "" }]);
-//   };
-
-//   const handleRemoveFaq = (index: number) => {
-//     setFaqs(faqs.filter((_, i) => i !== index));
-//   };
-
-//   const handleFaqChange = (index: number, field: "question" | "answer", value: string) => {
-//     const newFaqs = [...faqs];
-//     newFaqs[index][field] = value;
-//     setFaqs(newFaqs);
-//   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,11 +31,6 @@ export default function CreateSectionPage() {
       isActive: formData.get("isActive") === "true",
     };
 
-    // if (type === "faq") {
-    //   payload.faqs = faqs.filter(f => f.question.trim() !== "" && f.answer.trim() !== "");
-    // } else {
-    //   payload.content = content;
-    // }
 
     try {
       await dispatch(addSection(payload)).unwrap();
@@ -68,9 +49,11 @@ export default function CreateSectionPage() {
   return (
     <div className="space-y-6 pb-20">
       <div className="flex items-center gap-4">
-        <button onClick={() => router.back()} className="cursor-pointer p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
-          <ArrowLeft size={18} />
-        </button>
+        <Link href="/admin/policies">
+            <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+              <ArrowLeft size={18} />
+            </button>
+          </Link>
         <div>
           <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Create Policy</h1>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Add a new document section.</p>

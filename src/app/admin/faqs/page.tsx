@@ -51,11 +51,16 @@ export default function SectionsPage() {
   const getFaqCategories = (faq: any): string[] => {
     if (!faq.faqs) return [];
 
-    return [
-      ...new Set(
-        faq.faqs.map((f: any) => f.category)
-      ),
-    ] as string[];
+    const allCategories: string[] = faq.faqs.flatMap(
+      (f: any) =>
+        f.categories?.map((cat: any) =>
+          typeof cat === "object"
+            ? cat.name
+            : String(cat)
+        ) || []
+    );
+
+    return [...new Set(allCategories)];
   };
 
   const getFaqCount = (faq: any) => {

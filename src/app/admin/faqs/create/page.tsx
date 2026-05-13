@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,16 @@ import { addSection } from "@/src/store/slices/SectionSlice";
 import ConfirmModal from "@/src/components/ConfirmModal";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import Link from "next/link";
+import { getFaqCategories } from "@/src/store/slices/FaqCategorySlice";
+import Select from "react-select";
+
+interface FAQForm {
+  question: string;
+  answer: string;
+  categories: string[];
+}
+
 
 export default function CreateFAQPage() {
   const router = useRouter();
@@ -16,15 +26,40 @@ export default function CreateFAQPage() {
 
   const { loading } = useAppSelector((state) => state.sections);
 
-  const [faqs, setFaqs] = useState([{ question: "", answer: "", category:"" }]);
+  const [faqs, setFaqs] = useState<FAQForm[]>([{ question: "", answer: "", categories: [] }]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [faqToDeleteIndex, setFaqToDeleteIndex] = useState<number | null>(null);
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const endOfListRef = useRef<HTMLDivElement>(null);
+  
+
+  const { categories } = useAppSelector(
+    (state) => state.faqCategories
+  );
+
+  const categoryOptions = categories.map((cat: any) => ({
+    value: cat._id,
+    label: cat.name,
+  }));
+
+  useEffect(() => {
+    dispatch(getFaqCategories({}));
+  }, [dispatch]);
 
   const handleAddFaq = () => {
-    setFaqs([...faqs, { question: "", answer: "", category: "" }]);
+    setFaqs((prev) => [
+      ...prev,
+      {
+        question: "",
+        answer: "",
+        categories: [],
+      },
+    ]);
+
     setTimeout(() => {
-      endOfListRef.current?.scrollIntoView({ behavior: "smooth" });
+      endOfListRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
     }, 100);
   };
 
@@ -41,15 +76,35 @@ export default function CreateFAQPage() {
     setDeleteModalOpen(false);
   };
 
+  const handleCategoryChange = (
+    index: number,
+    values: string[]
+  ) => {
+    setFaqs((prev) =>
+      prev.map((faq, i) =>
+        i === index
+          ? { ...faq, categories: values }
+          : faq
+      )
+    );
+  };
+
   const handleFaqChange = (
     index: number,
-    field: "question" | "answer" | "category",
+    field: "question" | "answer",
     value: string
   ) => {
-    const newFaqs = [...faqs];
-    newFaqs[index][field] = value;
-    setFaqs(newFaqs);
+    const updated = [...faqs];
+
+    updated[index] = {
+      ...updated[index],
+      [field]: value,
+    };
+
+    setFaqs(updated);
+
   };
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,12 +112,12 @@ export default function CreateFAQPage() {
     const formData = new FormData(e.currentTarget);
 
     const payload = {
-      title: formData.get("title") as string,
+      title: formData.get("title")as string,
       type: "faq",
       isActive: formData.get("isActive") === "true",
       faqs: faqs.filter(
         (f) =>
-          f.category.trim() !== "" &&
+          f.categories.length > 0 &&
           f.question.trim() !== "" &&
           f.answer.trim() !== ""
       ),
@@ -71,7 +126,7 @@ export default function CreateFAQPage() {
     try {
       await dispatch(addSection(payload)).unwrap();
       toast.success("FAQ created successfully!");
-      router.push("/admin/faqs"); 
+      router.push("/admin/faqs");
     } catch (error: unknown) {
       console.error("Failed to create FAQ", error);
       if (error instanceof AxiosError) {
@@ -86,12 +141,11 @@ export default function CreateFAQPage() {
     <div className="space-y-6 pb-20">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => router.back()}
-          className="p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl"
-        >
-          <ArrowLeft size={18} />
-        </button>
+        <Link href="/admin/faqs">
+          <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+            <ArrowLeft size={18} />
+          </button>
+        </Link>
 
         <div>
           <h1 className="text-2xl font-bold text-zinc-950 dark:text-white">
@@ -159,15 +213,33 @@ export default function CreateFAQPage() {
                 className="p-4 bg-zinc-50 dark:bg-zinc-900 border rounded-xl flex gap-4"
               >
                 <div className="flex-1 space-y-3">
-                  <input
-                    type="text"
-                    value={faq.category}
-                    required
-                    onChange={(e) =>
-                      handleFaqChange(index, "category", e.target.value)
-                    }
-                    placeholder="Category (e.g. Billing & Payments)"
-                    className="w-full border rounded-lg px-3 py-2"
+                  <div className="flex items-center justify-between">
+                    <label>Categories</label>
+
+                    <button
+                      type="button"
+                      onClick={() => setCategoryModalOpen(true)}
+                      className="text-sm text-indigo-600"
+                    >
+                      + Add Category
+                    </button>
+                  </div>
+                  <Select
+                    isMulti
+                    options={categoryOptions}
+                    value={categoryOptions.filter((option) =>
+                      faq.categories.includes(option.value)
+                    )}
+                    onChange={(selectedOptions) => {
+                      const values = selectedOptions.map(
+                        (option) => option.value
+                      );
+
+                      handleCategoryChange(index, values);
+                    }}
+                    placeholder="Select categories..."
+                    className="text-black"
+                    classNamePrefix="select"
                   />
 
                   <input

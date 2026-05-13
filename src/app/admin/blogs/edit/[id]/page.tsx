@@ -49,19 +49,6 @@ export default function EditBlogPage() {
         setIsSubmitting(true);
         const formData = new FormData(e.currentTarget);
 
-        // const payload : BlogPayload = {
-        //     title: formData.get("title") as string,
-        //     excerpt: formData.get("excerpt") as string,
-        //     author: formData.get("author") as string,
-        //     status: formData.get("status") as "draft" | "published",
-        //     content: content,
-        //     tags: singleBlog.tags?.length > 0 ? singleBlog.tags : ["blog"],
-        // };
-
-        // if (imagePreview) {
-        //     payload.featuredImage = imagePreview;
-        // }
-
         formData.append("content", content);
 
         const tags =

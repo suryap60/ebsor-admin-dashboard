@@ -16,6 +16,7 @@ import {
   LogOut,
   HelpCircle
 } from "lucide-react";
+import { BiCategory, BiCollection } from "react-icons/bi";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -28,9 +29,11 @@ export default function AdminSidebar() {
     { name: "Careers", href: "/admin/careers", icon: Briefcase },
     { name: "Applications", href: "/admin/applications", icon: Files },
     { name: "Messages", href: "/admin/contacts", icon: MessageSquare },
+    { name: "Brands", href: "/admin/brands", icon: BiCollection },
     { name: "Testimonials", href: "/admin/testimonials", icon: Star },
     { name: "Policiess", href: "/admin/policies", icon: ShieldCheck },
     { name: "FAQs", href: "/admin/faqs", icon: HelpCircle },
+    { name: "FAQs Categories", href: "/admin/faq-categories", icon: BiCategory },
   ];
 
   const bottomItems = [

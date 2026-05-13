@@ -1,8 +1,10 @@
+import { FaqCategory } from "./FaqCategory";
+
 export interface FAQ {
   _id?: string;
   question: string;
   answer: string;
-  category: string;
+  categories: string[] | FaqCategory;
 }
 
 export interface Section {

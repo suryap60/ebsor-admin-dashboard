@@ -8,6 +8,8 @@ import careerReducer from "./slices/CareerSlice"
 import testimonialReducer from "./slices/TestimonialSlice"
 import sectionReducer from "./slices/SectionSlice"
 import profileReducer from "./slices/ProfileSlice";
+import brandReducer from "./slices/BrandSlice"
+import faqCategoriesReducer from "./slices/FaqCategorySlice"
 
 
 export const store = configureStore({
@@ -21,6 +23,8 @@ export const store = configureStore({
     testimonials: testimonialReducer,
     sections: sectionReducer,
     profile: profileReducer,
+    brands: brandReducer,
+    faqCategories: faqCategoriesReducer,
   },
 });
 

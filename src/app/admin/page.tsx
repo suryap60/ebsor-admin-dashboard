@@ -96,7 +96,7 @@ export default function AdminDashboard() {
                     <UserIcon />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{app.name}</p>
+                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{app.firstName} {app.lastName}</p>
                     <p className="text-xs text-zinc-500">Applied for {app.job?.title || 'Job'}</p>
                   </div>
                 </div>

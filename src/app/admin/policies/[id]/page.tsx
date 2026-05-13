@@ -42,12 +42,11 @@ export default function ViewSectionPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 bg-white dark:bg-zinc-950 cursor-pointer border border-zinc-200 dark:border-zinc-800 rounded-xl hover:text-zinc-950 dark:hover:text-white text-zinc-600 dark:text-zinc-400 transition-colors"
-          >
-            <ArrowLeft size={18} />
-          </button>
+          <Link href="/admin/policies">
+            <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+              <ArrowLeft size={18} />
+            </button>
+          </Link>
 
           <div>
             <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-1">

@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getCareers, getJobById, updateJobThunk } from "@/src/store/slices/CareerSlice";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import Link from "next/link";
 
 export default function EditCareerPage() {
     const router = useRouter();
@@ -89,9 +90,11 @@ export default function EditCareerPage() {
     return (
         <div className="space-y-6 pb-20">
             <div className="flex items-center gap-4">
-                <button onClick={() => router.back()} className="pcursor-pointer -2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
-                    <ArrowLeft size={18} />
-                </button>
+                <Link href="/admin/careers">
+                    <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+                        <ArrowLeft size={18} />
+                    </button>
+                </Link>
                 <div>
                     <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Edit Job Posting</h1>
                     <p className="text-zinc-600 dark:text-zinc-400 text-sm">Update details for Job #{params.slug}.</p>

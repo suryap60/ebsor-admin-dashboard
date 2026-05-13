@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { addProduct } from "@/src/store/slices/ProductSlice";
 import { toast } from "react-toastify";
 import RichTextEditor from "@/src/components/RichTextEditor";
+import Link from "next/link";
 
 export default function CreateProductPage() {
   const router = useRouter();
@@ -58,9 +59,11 @@ export default function CreateProductPage() {
   return (
     <div className="space-y-6 pb-20">
       <div className="flex items-center gap-4">
-        <button onClick={() => router.back()} className="cursor-pointer p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
-          <ArrowLeft size={18} />
-        </button>
+        <Link href="/admin/products">
+          <button className="cursor-pointer p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
+            <ArrowLeft size={18} />
+          </button>
+        </Link>
         <div>
           <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Create Product</h1>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Add a new product to your inventory.</p>

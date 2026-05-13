@@ -8,13 +8,13 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getApplicationById, updateApplicationStatusThunk } from "@/src/store/slices/ApplicationSlice";
 import { toast } from "react-toastify";
 import { IoLocation } from "react-icons/io5";
+import Link from "next/link";
 
 export default function ApplicationDetailPage() {
     const router = useRouter();
     const params = useParams();
     const dispatch = useAppDispatch();
     const [status, setStatus] = useState<string>("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
     const id = params?.id as string;
@@ -68,9 +68,11 @@ export default function ApplicationDetailPage() {
         <div className="space-y-6 pb-20">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => router.back()} className="p-2 bg-white cursor-pointer dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
-                        <ArrowLeft size={18} />
-                    </button>
+                    <Link href="/admin/applications">
+                        <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+                            <ArrowLeft size={18} />
+                        </button>
+                    </Link>
                     <div>
                         <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-1">Application Details</h1>
                         <p className="text-zinc-600 dark:text-zinc-400 text-sm">Reviewing application #{params.id}</p>

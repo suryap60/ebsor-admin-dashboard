@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getTestimonialById, updateTestimonialThunk } from "@/src/store/slices/TestimonialSlice";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import Link from "next/link";
 
 
 export default function EditTestimonialPage() {
@@ -113,9 +114,11 @@ export default function EditTestimonialPage() {
     return (
         <div className="space-y-6 pb-20">
             <div className="flex items-center gap-4">
-                <button onClick={() => router.back()} className="cursor-pointer p-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white rounded-xl transition-colors">
+                <Link href="/admin/testimonials">
+                    <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
                     <ArrowLeft size={18} />
-                </button>
+                    </button>
+                </Link>
                 <div>
                     <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-2">Edit Testimonial</h1>
                     <p className="text-zinc-600 dark:text-zinc-400 text-sm">Update details for Testimonial #{params.id}.</p>

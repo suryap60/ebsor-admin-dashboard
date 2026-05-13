@@ -42,12 +42,11 @@ export default function ViewSectionPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 bg-white dark:bg-zinc-950 cursor-pointer border border-zinc-200 dark:border-zinc-800 rounded-xl hover:text-zinc-950 dark:hover:text-white text-zinc-600 dark:text-zinc-400 transition-colors"
-          >
-            <ArrowLeft size={18} />
-          </button>
+          <Link href="/admin/faqs">
+            <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+              <ArrowLeft size={18} />
+            </button>
+          </Link>
 
           <div>
             <h1 className="text-2xl font-bold text-zinc-950 dark:text-white mb-1">
@@ -100,21 +99,33 @@ export default function ViewSectionPage() {
               <div className="space-y-8">
                 {singleSection.faqs && singleSection.faqs.length > 0 ? (
                   Object.entries(
-                    singleSection.faqs.reduce(
-                      (acc, faq) => {
-                        const category = faq.category || "General";
-
-                        if (!acc[category]) {
-                          acc[category] = [];
+                    singleSection.faqs.reduce((acc: any, faq: any) => {
+                      // No categories
+                      if (!faq.categories || faq.categories.length === 0) {
+                        if (!acc["General"]) {
+                          acc["General"] = [];
                         }
 
-                        acc[category].push(faq);
+                        acc["General"].push(faq);
 
                         return acc;
-                      },
-                      {} as Record<string, typeof singleSection.faqs>
-                    )
-                  ).map(([category, faqs]) => (
+                      }
+
+                      // Multiple categories
+                      faq.categories.forEach((cat: any) => {
+                        const categoryName =
+                          typeof cat === "object" ? cat.name : cat;
+
+                        if (!acc[categoryName]) {
+                          acc[categoryName] = [];
+                        }
+
+                        acc[categoryName].push(faq);
+                      });
+
+                      return acc;
+                    }, {})
+                  ).map(([category, faqs]: any) => (
                     <div key={category} className="space-y-4">
 
                       {/* Category Title */}
@@ -130,7 +141,7 @@ export default function ViewSectionPage() {
 
                       {/* FAQ Items */}
                       <div className="space-y-4">
-                        {faqs.map((faq, index) => (
+                        {faqs.map((faq: any, index: number) => (
                           <div
                             key={`${category}-${index}`}
                             className="p-5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl"

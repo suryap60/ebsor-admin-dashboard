@@ -12,6 +12,15 @@ import {
 import ConfirmModal from "@/src/components/ConfirmModal";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import Link from "next/link";
+import { getFaqCategories } from "@/src/store/slices/FaqCategorySlice";
+import Select from "react-select";
+
+interface FAQForm {
+  question: string;
+  answer: string;
+  categories: string[];
+}
 
 export default function EditFAQPage() {
   const router = useRouter();
@@ -22,11 +31,24 @@ export default function EditFAQPage() {
     (state) => state.sections
   );
 
-  const [faqs, setFaqs] = useState([{ question: "", answer: "", category: "" }]);
+  const [faqs, setFaqs] = useState<FAQForm[]>([{ question: "", answer: "", categories: [], }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [faqToDeleteIndex, setFaqToDeleteIndex] = useState<number | null>(null);
   const endOfListRef = useRef<HTMLDivElement>(null);
+
+  const { categories } = useAppSelector(
+    (state) => state.faqCategories
+  );
+
+  const categoryOptions = categories.map((cat: any) => ({
+    value: cat._id,
+    label: cat.name,
+  }));
+
+  useEffect(() => {
+    dispatch(getFaqCategories({}));
+  }, [dispatch]);
 
   // Fetch FAQ
   useEffect(() => {
@@ -39,16 +61,38 @@ export default function EditFAQPage() {
   useEffect(() => {
     if (singleSection?.type === "faq") {
       if (singleSection.faqs?.length) {
-        setFaqs(singleSection.faqs);
+        setFaqs(
+          singleSection.faqs.map((faq: any) => ({
+            question: faq.question || "",
+            answer: faq.answer || "",
+            categories:
+              faq.categories?.map((cat: any) =>
+                typeof cat === "object" ? cat._id : cat
+              ) || [],
+          }))
+        );
       }
     }
   }, [singleSection]);
 
   const handleAddFaq = () => {
-    setFaqs([...faqs, { question: "", answer: "", category: "" }]);
+    setFaqs([...faqs, { question: "", answer: "", categories: [] }]);
     setTimeout(() => {
       endOfListRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
+  };
+
+  const handleCategoryChange = (
+    index: number,
+    values: string[]
+  ) => {
+    setFaqs((prev) =>
+      prev.map((faq, i) =>
+        i === index
+          ? { ...faq, categories: values }
+          : faq
+      )
+    );
   };
 
   const handleRemoveFaq = (index: number) => {
@@ -66,7 +110,7 @@ export default function EditFAQPage() {
 
   const handleFaqChange = (
     index: number,
-    field: "question" | "answer" | "category",
+    field: "question" | "answer",
     value: string
   ) => {
     const updated = [...faqs];
@@ -90,7 +134,7 @@ export default function EditFAQPage() {
         (f) =>
           f.question.trim() &&
           f.answer.trim() &&
-          f.category.trim()
+          f.categories.length > 0
       ),
     };
 
@@ -128,12 +172,11 @@ export default function EditFAQPage() {
     <div className="space-y-6 pb-20">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => router.back()}
-          className="p-2 border rounded-xl"
-        >
-          <ArrowLeft size={18} />
-        </button>
+        <Link href="/admin/faqs">
+          <button className="w-10 h-10 mt-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors">
+            <ArrowLeft size={18} />
+          </button>
+        </Link>
 
         <div>
           <h1 className="text-2xl font-bold">Edit FAQ</h1>
@@ -189,35 +232,60 @@ export default function EditFAQPage() {
           {faqs.map((faq, index) => (
             <div key={index} className="p-4 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 md:p-8  flex gap-4">
               <div className="flex-1 space-y-3">
-                <input
-                  value={faq.category}
-                  required
-                  onChange={(e) =>
-                    handleFaqChange(index, "category", e.target.value)
-                  }
-                  placeholder="Category"
-                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3"
-                />
-                <input
-                  value={faq.question}
-                  required
-                  onChange={(e) =>
-                    handleFaqChange(index, "question", e.target.value)
-                  }
-                  placeholder="Question"
-                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
-                />
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Categories
+                  </label>
 
-                <textarea
-                  value={faq.answer}
-                  required
-                  onChange={(e) =>
-                    handleFaqChange(index, "answer", e.target.value)
-                  }
-                  placeholder="Answer"
-                  rows={3}
-                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
-                />
+                  <Select
+                    isMulti
+                    options={categoryOptions}
+                    value={categoryOptions.filter((option) =>
+                      faq.categories.includes(option.value)
+                    )}
+                    onChange={(selectedOptions) => {
+                      const values = selectedOptions.map(
+                        (option) => option.value
+                      );
+
+                      handleCategoryChange(index, values);
+                    }}
+                    required
+                    placeholder="Select categories..."
+                    className="text-black"
+                    classNamePrefix="select"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Question
+                  </label>
+                  <input
+                    value={faq.question}
+                    required
+                    onChange={(e) =>
+                      handleFaqChange(index, "question", e.target.value)
+                    }
+                    placeholder="Question"
+                    className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Answer
+                  </label>
+                  <textarea
+                    value={faq.answer}
+                    required
+                    onChange={(e) =>
+                      handleFaqChange(index, "answer", e.target.value)
+                    }
+                    placeholder="Answer"
+                    rows={3}
+                    className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-950 dark:text-white focus:outline-none focus:border-[#3ABDE7]/80 transition-all"
+                  />
+                </div>
               </div>
 
               {faqs.length > 1 && (
