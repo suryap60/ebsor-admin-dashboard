@@ -8,10 +8,14 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getApplicationById } from "@/src/store/slices/ApplicationSlice";
 import { IoLocation } from "react-icons/io5";
 import Link from "next/link";
+import { useSingleApplicationSocket } from "@/src/hooks/useSingleApplicationSocket";
 
 export default function ApplicationDetailPage() {
     const router = useRouter();
     const params = useParams();
+
+    useSingleApplicationSocket(params.id as string);
+    
     const dispatch = useAppDispatch();
     // const { singleApplication, loading } = useAppSelector((state) => state.applications);
 

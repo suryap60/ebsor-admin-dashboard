@@ -7,10 +7,14 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getSingleBlog } from "@/src/store/slices/BlogSlice";
+import { useSingleBlogsocket } from "@/src/hooks/useSingleBlogSocket";
 
 export default function ViewBlogPage() {
   const router = useRouter();
   const params = useParams();
+
+  useSingleBlogsocket(params.slug as string);
+  
   const dispatch = useAppDispatch();
 
   const { singleBlog, loading } = useAppSelector((state) => state.blogs);

@@ -12,10 +12,13 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getBrands } from "@/src/store/slices/BrandSlice";
 import { deleteBrand } from "@/src/services/BrandService";
+import { useBrandSocket } from "@/src/hooks/useBrandSocket";
 
 
 
 export default function BrandsPage() {
+  useBrandSocket();
+  
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null);

@@ -4,15 +4,12 @@ import { ApplicationState } from "@/src/types/ApplicationTypes";
 
 export const getApplications = createAsyncThunk(
   "applications/fetch",
-  async (
-    { page, limit, search }: { page: number; limit: number; search: string },
-    { rejectWithValue }
-  ) => {
+  async (params: any) => {
     try {
-      const res = await fetchApplications({ page, limit, search });
+      const res = await fetchApplications(params);
       return res;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Error");
+      return console.log(err.response?.data?.message || "Error");
     }
   }
 );

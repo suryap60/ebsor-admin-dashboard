@@ -7,10 +7,14 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getSingleJob } from "@/src/store/slices/CareerSlice";
+import { useSingleJobSocket } from "@/src/hooks/useSingleJobSocket";
 
 export default function ViewCareerPage() {
   const router = useRouter();
   const params = useParams();
+
+  useSingleJobSocket(params.slug as string);
+  
   const dispatch = useAppDispatch();
 
   const { singleJob, loading } = useAppSelector((state) => state.careers);

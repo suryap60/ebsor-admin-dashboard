@@ -7,10 +7,13 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getBrandById } from "@/src/store/slices/BrandSlice";
+import { useSingleBrandSocket } from "@/src/hooks/useSingleBrandSocket";
 
 export default function ViewBrandPage() {
   const params = useParams();
   const dispatch = useAppDispatch();
+
+  useSingleBrandSocket(params.id as string)
 
   const { singleBrand, loading } = useAppSelector((state) => state.brands);
 

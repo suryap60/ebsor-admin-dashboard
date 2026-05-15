@@ -12,10 +12,13 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getBlogs } from "@/src/store/slices/BlogSlice";
 import { deleteBlog } from "@/src/services/BlogService";
+import { useBlogSocket } from "@/src/hooks/useBlogSocket";
 
 
 
 export default function BlogsPage() {
+  useBlogSocket();
+  
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);

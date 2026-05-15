@@ -12,11 +12,14 @@ import { getCareers } from "@/src/store/slices/CareerSlice";
 import { deleteJob } from "@/src/services/CareerService";
 import ConfirmModal from "@/src/components/ConfirmModal";
 import { toast } from "react-toastify";
+import { useCareerSocket } from "@/src/hooks/useCareerSocket";
 
 
 
 
 export default function CareersPage() {
+  useCareerSocket();
+  
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);

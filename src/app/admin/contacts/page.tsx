@@ -8,9 +8,12 @@ import Pagination from "@/src/components/Pagination";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getContacts, updateContactStatusThunk } from "@/src/store/slices/ContactSlice";
 import { toast } from "react-toastify";
+import { useContactSocket } from "@/src/hooks/useContactSocket";
 
 
 export default function ContactsPage() {
+  useContactSocket();
+  
   const router = useRouter();
   const dispatch = useAppDispatch();
 

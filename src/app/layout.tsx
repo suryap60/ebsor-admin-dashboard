@@ -6,6 +6,7 @@ import { StoreProvider } from "../components/StoreProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-quill-new/dist/quill.snow.css";
+import SocketProvider from "../providers/SocketProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,8 +42,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <StoreProvider>
-            {children}
-            <ToastContainer position="top-right" autoClose={3000} />
+            <SocketProvider>
+              {children}
+              <ToastContainer position="top-right" autoClose={3000} />
+            </SocketProvider>
           </StoreProvider>
         </ThemeProvider>
       </body>

@@ -12,10 +12,13 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getFaqCategories } from "@/src/store/slices/FaqCategorySlice";
 import { deleteFaqCategory } from "@/src/services/FaqCategoryService";
+import { useCategorySocket } from "@/src/hooks/useCategorySocket";
 
 
 
 export default function FaqcategoriesPage() {
+  useCategorySocket();
+  
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedFaqCategoryId, setSelectedFaqCategoryId] = useState<string | null>(null);

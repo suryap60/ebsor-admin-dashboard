@@ -7,10 +7,14 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getTestimonialById } from "@/src/store/slices/TestimonialSlice";
+import { useSingleTestimonialSocket } from "@/src/hooks/useSingleTestimonialSocket";
 
 export default function ViewTestimonialPage() {
   const router = useRouter();
   const params = useParams();
+
+  useSingleTestimonialSocket(params.id as string);
+  
   const dispatch = useAppDispatch();
 
   const { singleTestimonial, loading } = useAppSelector((state) => state.testimonials);

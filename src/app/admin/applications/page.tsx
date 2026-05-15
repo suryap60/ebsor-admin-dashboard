@@ -8,10 +8,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getApplications } from "@/src/store/slices/ApplicationSlice";
+import { useApplicationSocket } from "@/src/hooks/useApplicationSocket";
 
 
 
 export default function ApplicationsPage() {
+  useApplicationSocket();
+  
   const router = useRouter();
   const dispatch = useAppDispatch();
 

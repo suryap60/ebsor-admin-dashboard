@@ -11,8 +11,11 @@ import { getTestimonials, removeTestimonial } from "@/src/store/slices/Testimoni
 import ConfirmModal from "@/src/components/ConfirmModal";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useTestimonialSocket } from "@/src/hooks/useTestimonialSocket";
 
 export default function TestimonialsPage() {
+  useTestimonialSocket();
+  
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedTestimonialId, setSelectedTestimonialId] = useState<string | null>(null);

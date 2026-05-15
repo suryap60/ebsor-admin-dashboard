@@ -11,8 +11,11 @@ import { getSections, removeSection } from "@/src/store/slices/SectionSlice";
 import ConfirmModal from "@/src/components/ConfirmModal";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useSectionSocket } from "@/src/hooks/useSectionSocket";
 
 export default function SectionsPage() {
+  useSectionSocket();
+  
   const router = useRouter();
   const dispatch = useAppDispatch();
 

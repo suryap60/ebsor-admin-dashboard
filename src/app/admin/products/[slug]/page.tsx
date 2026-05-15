@@ -7,10 +7,14 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getSingleProduct } from "@/src/store/slices/ProductSlice";
+import { useSingleProductSocket } from "@/src/hooks/useSingleProductSocket";
+import { param } from "framer-motion/client";
 
 export default function ViewProductPage() {
   const router = useRouter();
   const params = useParams();
+
+  useSingleProductSocket(params.slug as string)
   const dispatch = useAppDispatch();
 
   const [activeImage, setActiveImage] = useState<string | null>(null);

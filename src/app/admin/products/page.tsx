@@ -12,9 +12,12 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getProducts } from "@/src/store/slices/ProductSlice";
 import { deleteProduct } from "@/src/services/ProductSevices";
+import { useProductSocket } from "@/src/hooks/useProductSocket";
 
 
 export default function ProductsPage() {
+  useProductSocket();
+  
   const router = useRouter();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);

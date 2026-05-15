@@ -7,10 +7,13 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getContactById } from "@/src/store/slices/ContactSlice";
 import Link from "next/link";
+import { useSingleContactSocket } from "@/src/hooks/useSingleContactSocket";
 
 export default function ContactDetailPage() {
     const router = useRouter();
     const params = useParams();
+
+    useSingleContactSocket(params.id as string)
     const dispatch = useAppDispatch();
 
     const id = params?.id as string;
