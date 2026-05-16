@@ -3,10 +3,13 @@
 import { useEffect } from "react";
 import { getSocket } from "../lib/socket";
 import { useAppDispatch } from "../store/hooks";
+import { getSectionById } from "../store/slices/SectionSlice";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export const useSingleSectionSocket = (
-  sectionId: string
+  sectionId: string,
+  sectionType?: string
 ) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -16,41 +19,55 @@ export const useSingleSectionSocket = (
 
     const socket = getSocket();
 
-    // brand UPDATED
-    const handleUpdated = (brand: any) => {
-      console.log("Brand Updated:", brand);
+    // SECTION UPDATED
+    const handleUpdated = (section: any) => {
+      console.log("Section Updated:", section);
 
-      // refetch current brand
-    //   dispatch(getBrandById(sectionId));
+      // only refetch current section
+      if (section._id === sectionId) {
+        dispatch(getSectionById(sectionId));
+
+        // optional toast
+        // toast.success("Section updated");
+      }
     };
 
-    // section DELETED
+    // SECTION DELETED
     const handleDeleted = (deletedId: string) => {
-      console.log("Brand Deleted:", deletedId);
+      console.log("Section Deleted:", deletedId);
 
-      router.push("/admin/brands");
+      if (deletedId === sectionId) {
+        // toast.error("Section deleted");
+
+        // redirect based on type
+        if (sectionType === "faq") {
+          router.push("/admin/faqs");
+        } else {
+          router.push("/admin/policies");
+        }
+      }
     };
 
     socket.on(
-      "admin:brand:updated",
+      "admin:section:updated",
       handleUpdated
     );
 
     socket.on(
-      "admin:brand:deleted",
+      "admin:section:deleted",
       handleDeleted
     );
 
     return () => {
       socket.off(
-        "admin:brand:updated",
+        "admin:section:updated",
         handleUpdated
       );
 
       socket.off(
-        "admin:brand:deleted",
+        "admin:section:deleted",
         handleDeleted
       );
     };
-  }, [dispatch, sectionId, router]);
+  }, [dispatch, sectionId, sectionType, router]);
 };

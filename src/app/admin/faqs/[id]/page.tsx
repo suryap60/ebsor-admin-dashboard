@@ -7,14 +7,18 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { getSectionById } from "@/src/store/slices/SectionSlice";
+import { useSingleSectionSocket } from "@/src/hooks/useSingleSectionSocket";
 
 export default function ViewSectionPage() {
   const router = useRouter();
   const params = useParams();
+
   const dispatch = useAppDispatch();
 
   const { singleSection, loading } = useAppSelector((state) => state.sections);
 
+  useSingleSectionSocket(params.id as string, singleSection?.type)
+  
   useEffect(() => {
     if (params.id) {
       dispatch(getSectionById(params.id as string));

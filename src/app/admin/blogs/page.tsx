@@ -129,7 +129,7 @@ export default function BlogsPage() {
                 className="hover:bg-zinc-100 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer"
               >
                 <td className="px-6 py-4">
-                  <div className="font-medium text-zinc-950 dark:text-white">{blog.title}</div>
+                  <div className="font-medium text-zinc-950 dark:text-white max-w-[250px] truncate">{blog.title}</div>
                 </td>
                 <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{blog.author}</td>
                 <td className="px-6 py-4">
