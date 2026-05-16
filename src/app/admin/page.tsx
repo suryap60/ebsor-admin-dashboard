@@ -17,24 +17,14 @@ export default function AdminDashboard() {
   const { pagination: careerPagination } = useAppSelector(state => state.careers);
   const { applications, pagination: appPagination } = useAppSelector(state => state.applications);
 
-  const hasFetched = useRef(false);
-
   useEffect(() => {
-    if (hasFetched.current) return;
-
     const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
     if (!token) return;
 
-    hasFetched.current = true;
-
-    const delay = setTimeout(() => {
-      dispatch(getProducts({ page: 1, limit: 1, search: "" }));
-      dispatch(getBlogs({ page: 1, limit: 1, search: "", status: "" }));
-      dispatch(getCareers({ page: 1, limit: 1, search: "" }));
-      dispatch(getApplications({ page: 1, limit: 5, search: "" }));
-    }, 500);
-
-    return () => clearTimeout(delay);
+    dispatch(getProducts({ page: 1, limit: 1, search: "" }));
+    dispatch(getBlogs({ page: 1, limit: 1, search: "", status: "" }));
+    dispatch(getCareers({ page: 1, limit: 1, search: "" }));
+    dispatch(getApplications({ page: 1, limit: 5, search: "" }));
   }, [dispatch]);
 
   const stats = [

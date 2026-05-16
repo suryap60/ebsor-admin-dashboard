@@ -17,10 +17,21 @@ import {
   HelpCircle
 } from "lucide-react";
 import { BiCategory, BiCollection } from "react-icons/bi";
+import { useState } from "react";
+import LogoutModal from "@/src/components/LogoutModal";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const handleLogoutConfirm = () => {
+    setIsLogoutModalOpen(false);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
 
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -42,6 +53,7 @@ export default function AdminSidebar() {
   ];
 
   return (
+    <>
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 flex flex-col transition-all duration-300 pointer-events-auto">
       <div className="flex h-16 items-center px-6 border-b border-zinc-200 dark:border-zinc-800">
         <Link href="/admin" className="flex items-center gap-2">
@@ -98,10 +110,7 @@ export default function AdminSidebar() {
               onClick={(e) => {
                 if (item.name === "Logout") {
                   e.preventDefault();
-                  localStorage.removeItem("accessToken");
-                  localStorage.removeItem("refreshToken");
-                  localStorage.removeItem("user");
-                  router.push("/login");
+                  setIsLogoutModalOpen(true);
                 }
               }}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${isActive
@@ -116,5 +125,11 @@ export default function AdminSidebar() {
         })}
       </div>
     </aside>
+    <LogoutModal
+      isOpen={isLogoutModalOpen}
+      onClose={() => setIsLogoutModalOpen(false)}
+      onConfirm={handleLogoutConfirm}
+    />
+    </>
   );
 }
