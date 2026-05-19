@@ -8,6 +8,8 @@ export interface Product {
   shortDescription?: string;
   images: string[];
   category: string;
+  order: number;
+
   createdAt?: string;
   updatedAt?: string;
 }
@@ -17,4 +19,9 @@ export interface ProductState {
   singleProduct: Product | null;
   pagination: Pagination;
   loading: boolean;
+}
+
+export interface ReorderProductPayload {
+  id: string;
+  order: number;
 }

@@ -10,10 +10,26 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
-import { getProducts } from "@/src/store/slices/ProductSlice";
+import { getProducts, setProducts } from "@/src/store/slices/ProductSlice";
 import { deleteProduct } from "@/src/services/ProductSevices";
 import { useProductSocket } from "@/src/hooks/useProductSocket";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
+import { reorderProducts } from "@/src/services/ProductSevices";
+import SortableRow from "@/src/components/ui/SortableRow";
 
 export default function ProductsPage() {
   useProductSocket();
@@ -22,6 +38,15 @@ export default function ProductsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const dispatch = useAppDispatch();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor)
+  );
 
   const { products, pagination, loading } = useAppSelector(
     (state) => state.products
@@ -58,6 +83,38 @@ export default function ProductsPage() {
     }
   };
 
+
+  const handleDragEnd = async (event: any) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = products.findIndex(
+      (p) => p._id === active.id
+    );
+
+    const newIndex = products.findIndex(
+      (p) => p._id === over.id
+    );
+
+    const reordered = arrayMove(
+      products,
+      oldIndex,
+      newIndex
+    );
+
+    // UPDATE UI IMMEDIATELY
+    dispatch(setProducts(reordered));
+
+    // SAVE TO DB
+    await reorderProducts(
+      reordered.map((item, index) => ({
+        id: item._id,
+        order: (page - 1) * 10 + index + 1,
+      }))
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -90,81 +147,94 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-400">
-            <tr>
-              <th className="px-6 py-4 font-medium">Product</th>
-              <th className="px-6 py-4 font-medium">Description</th>
-              <th className="px-6 py-4 font-medium">Category</th>
-              <th className="px-6 py-4 font-medium text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/50">
-            {products.map((product, i) => (
-              <motion.tr
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: i * 0.05 }}
-                key={product._id}
-                onClick={() => router.push(`/admin/products/${product.slug}`)}
-                className="hover:bg-zinc-100 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer"
-              >
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
-                      {product.images && product.images.length > 0 ? (
-                        <img 
-                          src={product.images[0]}
-                          alt={product.name} 
-                          className="w-full h-full object-cover" 
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={products.map((p) => p._id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-400">
+                <tr>
+                  <th className="px-6 py-4 font-medium">Product</th>
+                  <th className="px-6 py-4 font-medium">Description</th>
+                  <th className="px-6 py-4 font-medium">Category</th>
+                  <th className="px-6 py-4 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/50">
+                {products.map((product, i) => (
+                  // <motion.tr
+                  //   initial={{ opacity: 0, y: 10 }}
+                  //   animate={{ opacity: 1, y: 0 }}
+                  //   transition={{ duration: 0.2, delay: i * 0.05 }}
+                  //   key={product._id}
+                  //   onClick={() => router.push(`/admin/products/${product.slug}`)}
+                  //   className="hover:bg-zinc-100 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer"
+                  // >
+                    <SortableRow key={product._id} product={product}>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
+                          {product.images && product.images.length > 0 ? (
+                            <img 
+                              src={product.images[0]}
+                              alt={product.name} 
+                              className="w-full h-full object-cover" 
+                            />
+                          ) : (
+                            <ImageIcon size={16} className="text-zinc-500" />
+                          )}
+                        </div>
+                        <div className="font-medium text-zinc-950 dark:text-white">{product.name}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 max-w-[200px] truncate" title={product.shortDescription}>
+                      {product.shortDescription}
+                    </td>
+                    <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{product.category}</td>
+                    {/* <td className="px-6 py-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'Active'
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                        }`}>
+                        {product.status}
+                      </span>
+                    </td> */}
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end">
+                        <ActionMenu
+                          actions={[
+                            {
+                              label: "View Details",
+                              icon: <Eye size={16} />,
+                              onClick: () => router.push(`/admin/products/${product.slug}`),
+                            },
+                            {
+                              label: "Edit",
+                              icon: <Edit size={16} />,
+                              onClick: () => router.push(`/admin/products/edit/${product._id}`),
+                            },
+                            {
+                              label: "Delete",
+                              icon: <Trash2 size={16} />,
+                              onClick: () => handleDeleteClick(product._id),
+                              destructive: true,
+                            },
+                          ]}
                         />
-                      ) : (
-                        <ImageIcon size={16} className="text-zinc-500" />
-                      )}
-                    </div>
-                    <div className="font-medium text-zinc-950 dark:text-white">{product.name}</div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400 max-w-[200px] truncate" title={product.shortDescription}>
-                  {product.shortDescription}
-                </td>
-                <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{product.category}</td>
-                {/* <td className="px-6 py-4">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'Active'
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                    : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                    }`}>
-                    {product.status}
-                  </span>
-                </td> */}
-                <td className="px-6 py-4 text-right">
-                  <div className="flex justify-end">
-                    <ActionMenu
-                      actions={[
-                        {
-                          label: "View Details",
-                          icon: <Eye size={16} />,
-                          onClick: () => router.push(`/admin/products/${product.slug}`),
-                        },
-                        {
-                          label: "Edit",
-                          icon: <Edit size={16} />,
-                          onClick: () => router.push(`/admin/products/edit/${product._id}`),
-                        },
-                        {
-                          label: "Delete",
-                          icon: <Trash2 size={16} />,
-                          onClick: () => handleDeleteClick(product._id),
-                          destructive: true,
-                        },
-                      ]}
-                    />
-                  </div>
-                </td>
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
+                      </div>
+                    </td>
+                    </SortableRow>
+                  // </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </SortableContext>
+        </DndContext>
       </div>
 
       <ConfirmModal

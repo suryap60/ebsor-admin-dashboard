@@ -1,4 +1,5 @@
 import api from "../lib/axios";
+import { ProductState, ReorderProductPayload } from "../types/Product";
 
 export const fetchProducts = async (params: {
   page?: number;
@@ -41,5 +42,14 @@ export const updateProduct = async (id: string, data: any) => {
 
 export const deleteProduct = async (id: string) => {
   const res = await api.delete(`/products/${id}`);
+  return res.data;
+};
+
+export const reorderProducts = async (products: ReorderProductPayload[]) => {
+  const res = await api.patch(
+    "/products/reorder",
+    { products }
+  );
+
   return res.data;
 };
